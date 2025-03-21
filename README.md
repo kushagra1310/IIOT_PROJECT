@@ -1,2 +1,2 @@
 # IIOT_PROJECT
-Team no. 46
+Team no: 46
