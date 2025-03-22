@@ -1,74 +1,75 @@
+// temp-humidity.ino
+
 #include <WiFi.h>
-#include <HTTPClient.h>
-#include "DHT.h"
+#include <PubSubClient.h>
+#include <DHT.h>
 
-// Wi-Fi credentials
-const char* ssid = "A35";
-const char* password = "ghephukat";
+// WiFi credentials
+const char* ssid = "YOUR_WIFI_SSID";
+const char* password = "YOUR_WIFI_PASSWORD";
 
-// ThingSpeak API
-String apiKey = "QBPN6Z90QFJIEZGE";
-const char* server = "http://api.thingspeak.com/update";
+// MQTT broker details
+const char* mqtt_server = "YOUR_MQTT_BROKER_IP";
+const char* mqtt_topic = "climate_control/temp_humidity";
 
+WiFiClient espClient;
+PubSubClient client(espClient);
 
-// DHT22 setup
-#define DHTPIN 4       // GPIO pin for DHT22 data
+// DHT Sensor settings
+#define DHTPIN 4  // GPIO where DHT sensor is connected
 #define DHTTYPE DHT22
 DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {
-  Serial.begin(115200);
-  
-  dht.begin();
+    Serial.begin(115200);
+    WiFi.begin(ssid, password);
 
-  WiFi.begin(ssid, password);
-  Serial.print("Connecting to Wi-Fi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("\nWi-Fi connected!");
+    Serial.print("Connecting to WiFi...");
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
+    Serial.println(" Connected!");
+
+    client.setServer(mqtt_server, 1883);
+    reconnect();
+    
+    dht.begin();
 }
 
 void loop() {
-  if (WiFi.status() == WL_CONNECTED) {
-    // --- DHT22 Sensor Read ---
-    float humidity = dht.readHumidity();
+    if (!client.connected()) {
+        reconnect();
+    }
+    client.loop();
+
     float temperature = dht.readTemperature();
+    float humidity = dht.readHumidity();
 
-    if (isnan(humidity) || isnan(temperature)) {
-      Serial.println("Failed to read from DHT sensor!");
-      humidity = 0;
-      temperature = 0;
+    if (isnan(temperature) || isnan(humidity)) {
+        Serial.println("Failed to read from DHT sensor!");
+        return;
     }
 
-    // Print to Serial for debugging
-    Serial.println("----------- DATA -----------");
-    Serial.print("Temperature (°C): "); Serial.println(temperature);
-    Serial.print("Humidity (%): "); Serial.println(humidity);
-    Serial.println("----------------------------");
+    // Publish temperature and humidity as JSON
+    String payload = "{\"temperature\":" + String(temperature) + ", \"humidity\":" + String(humidity) + "}";
+    client.publish(mqtt_topic, payload.c_str());
 
-    // --- Send to ThingSpeak ---
-    HTTPClient http;
-    String url = server;
-    url += "?api_key=" + apiKey;
-    url += "&field1=" + String(temperature);      // Temperature
-    url += "&field2=" + String(humidity);         // Humidity
+    Serial.println("Published: " + payload);
+    
+    delay(5000);  // Send data every 5 seconds
+}
 
-    http.begin(url);
-    int httpCode = http.GET();
-
-    if (httpCode > 0) {
-      Serial.println("Data sent to ThingSpeak!");
-    } else {
-      Serial.print("Error sending data: ");
-      Serial.println(httpCode);
+void reconnect() {
+    while (!client.connected()) {
+        Serial.print("Attempting MQTT connection...");
+        if (client.connect("ESP32_Client")) {
+            Serial.println(" connected!");
+        } else {
+            Serial.print(" failed, rc=");
+            Serial.print(client.state());
+            Serial.println(" trying again in 5 seconds");
+            delay(5000);
+        }
     }
-
-    http.end();
-  } else {
-    Serial.println("Wi-Fi disconnected!");
-  }
-
-  delay(15000); // ThingSpeak free account updates every 15s
 }
