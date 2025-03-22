@@ -64,11 +64,11 @@ Install python packages
 
 ## Important note regarding data formatting
 
- The backend expects the sensor input to be in the following format (json):
- {
-   "device_id": "esp32-1",
-   "temp": 30,
-   "humidity": 55,
-   "air_quality": 180,
-   "occupied": true
-}
+ The backend expects the sensor input to be in the following format (json):<br>
+ {  <br>
+   "device_id": "esp32-1",  <br>
+   "temp": 30,  <br>
+   "humidity": 55,  <br>
+   "air_quality": 180,  <br>
+   "occupied": true  <br>
+}  
