@@ -55,11 +55,11 @@ Install python packages
 
 1. Make sure you are in this directory (i.e. `climate_control_backed`) which has the main.py, mqtt_client.py and logic.py
 2. Run `uvicorn main:app --reload`:
-	-- You should see a message that FastAPI is running at http://127.0.0.1:8000 or something of the such
-	-- And in the logs:
-		-- [FASTAPI] Starting MQTT client...
-		-- [MQTT] Connected with result code 0
-		-- [MQTT] Subscribed to topic: home/sensors/#
+	- You should see a message that FastAPI is running at http://127.0.0.1:8000 or something of the such
+	- And in the logs:
+		- [FASTAPI] Starting MQTT client...
+		- [MQTT] Connected with result code 0
+		- [MQTT] Subscribed to topic: home/sensors/#
 		
 
 ## Important note regarding data formatting
