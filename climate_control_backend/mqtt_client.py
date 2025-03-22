@@ -1,5 +1,7 @@
 # mqtt_client.py
 
+# NOT BEING USED RIGHT NOW!!!
+
 # This script will do the following:
 # 1. Connect to a local Mosquitto broker
 # 2. Subscribe to a topic. Topics would be for example one of the following: 
