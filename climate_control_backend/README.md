@@ -10,7 +10,10 @@ This backend is responsible for:
 
 ## Project Structure
 
-There are 3 python files - main.py, mqtt_client.py and logic.py
+There are 3 python files - main.py, mqtt_client.py and logic.py:
+- main.py – Starts the FastAPI server and initializes the MQTT client on startup.
+- mqtt_client.py – Handles all MQTT communication: subscribing to sensor data and publishing actuator commands.
+- logic.py – Contains rule-based logic to process sensor inputs and decide the appropriate actuator response.
 
 
 ## Requirements
