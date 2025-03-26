@@ -1,24 +1,45 @@
-// temp-humidity.ino
-
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <DHT.h>
+#include <Servo.h>
 
 // WiFi credentials
-const char* ssid = "YOUR_WIFI_SSID";
-const char* password = "YOUR_WIFI_PASSWORD";
+const char* ssid = "Samarth's iPhone";
+const char* password = "abcdef123";
 
 // MQTT broker details
-const char* mqtt_server = "YOUR_MQTT_BROKER_IP";
+const char* mqtt_server = "172.20.10.2";
 const char* mqtt_topic = "climate_control/temp_humidity";
+const char* actuator_topic = "climate_control/fan_cmd";  // New actuator command topic
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 // DHT Sensor settings
-#define DHTPIN 4  // GPIO where DHT sensor is connected
+#define DHTPIN 4
 #define DHTTYPE DHT22
 DHT dht(DHTPIN, DHTTYPE);
+
+// Servo settings
+#define SERVO_PIN 5
+Servo fanServo;
+
+// Handle MQTT messages (Fan control)
+void callback(char* topic, byte* payload, unsigned int length) {
+    String message = "";
+    for (int i = 0; i < length; i++) {
+        message += (char)payload[i];
+    }
+
+    Serial.print("Received command: ");
+    Serial.println(message);
+
+    if (message == "FAN_ON") {
+        fanServo.write(90);
+    } else if (message == "FAN_OFF") {
+        fanServo.write(0);
+    }
+}
 
 void setup() {
     Serial.begin(115200);
@@ -32,9 +53,12 @@ void setup() {
     Serial.println(" Connected!");
 
     client.setServer(mqtt_server, 1883);
+    client.setCallback(callback);
     reconnect();
-    
+
     dht.begin();
+    fanServo.attach(SERVO_PIN);
+    fanServo.write(0);  // Default to OFF
 }
 
 void loop() {
@@ -65,6 +89,7 @@ void reconnect() {
         Serial.print("Attempting MQTT connection...");
         if (client.connect("ESP32_Client")) {
             Serial.println(" connected!");
+            client.subscribe(actuator_topic);
         } else {
             Serial.print(" failed, rc=");
             Serial.print(client.state());
