@@ -17,15 +17,14 @@ def process_sensor_data(data):
     # Extract values with defaults
     temp = data.get("temp", 0)
     humidity = data.get("humidity", 0)
-    
+
     # We ignore these for this specific test case
     air_quality = data.get("air_quality", 0)
     occupied = data.get("occupied", True)  # Assume it's always occupied for test
 
     print(f"[LOGIC] Processing: Temp={temp}, Humidity={humidity}")
 
-    # Simplified logic for test case:
-    # If temperature exceeds 28°C, turn on the fan (servo motor in test setup)
+    # If temperature exceeds 28°C, turn on the fan
     if temp > 28:
         return "FAN_ON"
 

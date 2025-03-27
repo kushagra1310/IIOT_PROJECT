@@ -1,7 +1,7 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <DHT.h>
-#include <Servo.h>
+#include <ESP32Servo.h>  // ESP32-compatible servo library
 
 // WiFi credentials
 const char* ssid = "Samarth's iPhone";
@@ -10,7 +10,7 @@ const char* password = "abcdef123";
 // MQTT broker details
 const char* mqtt_server = "172.20.10.2";
 const char* mqtt_topic = "climate_control/temp_humidity";
-const char* actuator_topic = "climate_control/fan_cmd";  // New actuator command topic
+const char* actuator_topic = "climate_control/fan_cmd";  // Fan control topic
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -76,7 +76,7 @@ void loop() {
     }
 
     // Publish temperature and humidity as JSON
-    String payload = "{\"temperature\":" + String(temperature) + ", \"humidity\":" + String(humidity) + "}";
+    String payload = "{\"temp\":" + String(temperature) + ", \"humidity\":" + String(humidity) + "}";
     client.publish(mqtt_topic, payload.c_str());
 
     Serial.println("Published: " + payload);
