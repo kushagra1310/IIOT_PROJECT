@@ -1,32 +1,58 @@
-# main.py
-
-# This is the entry point of your backend server.
-# It uses FastAPI to provide a basic web interface,
-# and it starts the MQTT client to listen for sensor data.
-
 import paho.mqtt.client as mqtt
 import json
-from logic import process_sensor_data  # Assuming you have this function in logic.py
 
-MQTT_BROKER = "YOUR_MQTT_BROKER_IP"
-MQTT_TOPIC = "climate_control/temp_humidity"
+MQTT_BROKER = "192.168.51.225"
+TEMP_HUMID_TOPIC = "temphumid_code/temp_humidity"
+FAN_CONTROL_TOPIC = "temphumid_code/fan_control"
+
+def on_connect(client, userdata, flags, rc):
+    print(f"Connection Status: {mqtt.connack_string(rc)}")
+    if rc == 0:
+        print(f"Successfully connected to broker {MQTT_BROKER}")
+        print(f"Subscribing to topic: {TEMP_HUMID_TOPIC}")
+        client.subscribe(TEMP_HUMID_TOPIC)
+    else:
+        print("Connection failed")
 
 def on_message(client, userdata, msg):
+    print("=" * 50)
+    print(f"Message Received!")
+    print(f"Topic: {msg.topic}")
+    print(f"Raw Payload: {msg.payload}")
+
     try:
-        data = json.loads(msg.payload.decode())
-        temperature = data.get("temperature")
-        humidity = data.get("humidity")
-        print(f"Received -> Temperature: {temperature}°C, Humidity: {humidity}%")
-        process_sensor_data(temperature, humidity)
+        decoded_payload = msg.payload.decode('utf-8')
+        print(f"Decoded Payload: {decoded_payload}")
+
+        parsed_data = json.loads(decoded_payload)
+        if "temperature" in parsed_data:
+            temperature = float(parsed_data["temperature"])
+            humidity = float(parsed_data["humidity"])
+
+            print(f"Temperature: {temperature}°C, Humidity: {humidity}%")
+
+            fan_status = "ON" if temperature >= 25 else "OFF"
+            
+            fan_message = json.dumps({"fan": fan_status})
+            client.publish(FAN_CONTROL_TOPIC, fan_message)
+            print(f"Fan status set to: {fan_status}")
+
     except Exception as e:
-        print("Error processing message:", e)
+        print(f"Error processing message: {e}")
+    
+    print("=" * 50)
+
+def on_subscribe(client, userdata, mid, granted_qos):
+    print(f"Subscribed to topic {TEMP_HUMID_TOPIC}")
 
 client = mqtt.Client()
+client.on_connect = on_connect
 client.on_message = on_message
+client.on_subscribe = on_subscribe
 
-print("Connecting to MQTT broker...")
-client.connect(MQTT_BROKER, 1883, 60)
-client.subscribe(MQTT_TOPIC)
-
-print("Listening for sensor data...")
-client.loop_forever()
+print("Attempting to connect to MQTT broker...")
+try:
+    client.connect(MQTT_BROKER, 1883, 60)
+    client.loop_forever()
+except Exception as e:
+    print(f"Connection Error: {e}")
