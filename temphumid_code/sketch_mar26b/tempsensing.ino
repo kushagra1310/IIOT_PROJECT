@@ -14,7 +14,7 @@ DHT dht(DHTPIN, DHTTYPE);
 
 const char* ssid = "A35";
 const char* password = "ghephukat";
-const char* mqtt_broker = "192.168.51.225";
+const char* mqtt_broker = "192.168.22.225";
 const char* temp_humid_topic = "temphumid_code/temp_humidity";
 const char* fan_control_topic = "temphumid_code/fan_control";
 
@@ -35,7 +35,7 @@ void connectWiFi() {
 
 void connectMQTT() {
     client.setServer(mqtt_broker, 1883);
-    client.setCallback(callback);
+    // client.setCallback(callback);
     
     while (!client.connected()) {
         Serial.print("Connecting to MQTT...");
@@ -52,37 +52,37 @@ void connectMQTT() {
     }
 }
 
-void callback(char* topic, byte* payload, unsigned int length) {
-    Serial.println("=== CALLBACK FUNCTION TRIGGERED ===");
-    Serial.print("Message received on topic: ");
-    Serial.println(topic);
+// void callback(char* topic, byte* payload, unsigned int length) {
+//     Serial.println("=== CALLBACK FUNCTION TRIGGERED ===");
+//     Serial.print("Message received on topic: ");
+//     Serial.println(topic);
 
-    char message[length + 1];
-    memcpy(message, payload, length);
-    message[length] = '\0';
+//     char message[length + 1];
+//     memcpy(message, payload, length);
+//     message[length] = '\0';
 
-    Serial.print("Payload: ");
-    Serial.println(message);
+//     Serial.print("Payload: ");
+//     Serial.println(message);
 
-    StaticJsonDocument<200> doc;
-    DeserializationError error = deserializeJson(doc, message);
+//     StaticJsonDocument<200> doc;
+//     DeserializationError error = deserializeJson(doc, message);
 
-    if (!error && doc.containsKey("fan")) {
-        String fanStatus = doc["fan"].as<String>();
-        Serial.print("Fan Status: ");
-        Serial.println(fanStatus);
+//     if (!error && doc.containsKey("fan")) {
+//         String fanStatus = doc["fan"].as<String>();
+//         Serial.print("Fan Status: ");
+//         Serial.println(fanStatus);
 
-        if (fanStatus == "ON") {
-            digitalWrite(LED_PIN, HIGH);
-            Serial.println("LED turned ON");
-        } else {
-            digitalWrite(LED_PIN, LOW);
-            Serial.println("LED turned OFF");
-        }
-    } else {
-        Serial.println("JSON parsing failed.");
-    }
-}
+//         if (fanStatus == "ON") {
+//             digitalWrite(LED_PIN, HIGH);
+//             Serial.println("LED turned ON");
+//         } else {
+//             digitalWrite(LED_PIN, LOW);
+//             Serial.println("LED turned OFF");
+//         }
+//     } else {
+//         Serial.println("JSON parsing failed.");
+//     }
+// }
 
 void publishSensorData() {
     float temperature = dht.readTemperature();
@@ -122,5 +122,5 @@ void loop() {
     
     // Publish sensor data every 5 seconds
     publishSensorData();
-    delay(1000);
+    delay(3000);
 }

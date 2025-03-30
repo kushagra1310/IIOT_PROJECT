@@ -1,58 +1,97 @@
 import paho.mqtt.client as mqtt
 import json
 
-MQTT_BROKER = "192.168.51.225"
-TEMP_HUMID_TOPIC = "temphumid_code/temp_humidity"
-FAN_CONTROL_TOPIC = "temphumid_code/fan_control"
+# Threshold for CO2
+CO2_THRESHOLD = 150
 
+# MQTT Broker Details
+MQTT_BROKER = "192.168.22.225"
+MQTT_PORT = 1883
+
+# MQTT Topics
+CO2_TOPIC = "sensor/co2"
+TEMP_HUMID_TOPIC = "temphumid_code/temp_humidity"
+WINDOW_CONTROL_TOPIC = "temphumid_code/window_control"
+
+# Store last CO₂ reading
+last_co2_ppm = 0
+
+# Callback when the client connects to the broker
 def on_connect(client, userdata, flags, rc):
     print(f"Connection Status: {mqtt.connack_string(rc)}")
     if rc == 0:
-        print(f"Successfully connected to broker {MQTT_BROKER}")
-        print(f"Subscribing to topic: {TEMP_HUMID_TOPIC}")
-        client.subscribe(TEMP_HUMID_TOPIC)
+        print(f"Connected to MQTT Broker: {MQTT_BROKER}")
+        print(f"Subscribing to: {CO2_TOPIC} and {TEMP_HUMID_TOPIC}")
+        client.subscribe([(CO2_TOPIC, 0), (TEMP_HUMID_TOPIC, 0)])
     else:
         print("Connection failed")
 
+# Callback when a message is received
 def on_message(client, userdata, msg):
+    global last_co2_ppm  # Use global variable for CO₂ level
+
     print("=" * 50)
-    print(f"Message Received!")
-    print(f"Topic: {msg.topic}")
+    print(f"Message Received! Topic: {msg.topic}")
     print(f"Raw Payload: {msg.payload}")
 
     try:
         decoded_payload = msg.payload.decode('utf-8')
         print(f"Decoded Payload: {decoded_payload}")
 
-        parsed_data = json.loads(decoded_payload)
-        if "temperature" in parsed_data:
-            temperature = float(parsed_data["temperature"])
-            humidity = float(parsed_data["humidity"])
+        # Process CO₂ messages
+        if msg.topic == CO2_TOPIC:
+            last_co2_ppm = float(decoded_payload)
+            print(f"Updated CO₂ Level: {last_co2_ppm} ppm")
 
-            print(f"Temperature: {temperature}°C, Humidity: {humidity}%")
+            if last_co2_ppm > 1000:
+                print("⚠ Warning: High CO₂ Level Detected!")
 
-            fan_status = "ON" if temperature <= 25 and temperature>=18 else "OFF"
-            
-            fan_message = json.dumps({"fan": fan_status})
-            client.publish(FAN_CONTROL_TOPIC, fan_message)
-            print(f"Fan status set to: {fan_status}")
+        # Process Temperature & Humidity messages
+        elif msg.topic == TEMP_HUMID_TOPIC:
+            parsed_data = json.loads(decoded_payload)
+
+            if "temperature" in parsed_data and "humidity" in parsed_data:
+                temperature = float(parsed_data["temperature"])
+                humidity = float(parsed_data["humidity"])
+
+                print(f"Temperature: {temperature}°C, Humidity: {humidity}%")
+
+                # Window control logic
+                if temperature >= 28:
+                    window_status = "CLOSE"
+                elif 20 <= temperature < 28 and last_co2_ppm <= CO2_THRESHOLD:
+                    window_status = "CLOSE"
+                elif 20 <= temperature < 28 and last_co2_ppm > CO2_THRESHOLD:
+                    window_status = "OPEN"
+                elif temperature < 20 and last_co2_ppm > CO2_THRESHOLD:
+                    window_status = "OPEN"
+                else:
+                    window_status = "CLOSE"
+
+                # Publish window status
+                window_message = json.dumps({"window": window_status})
+                client.publish(WINDOW_CONTROL_TOPIC, window_message)
+                print(f"Window status set to: {window_status}")
 
     except Exception as e:
         print(f"Error processing message: {e}")
-    
+
     print("=" * 50)
 
+# Callback for subscription confirmation
 def on_subscribe(client, userdata, mid, granted_qos):
-    print(f"Subscribed to topic {TEMP_HUMID_TOPIC}")
+    print(f"Subscribed successfully!")
 
+# Set up MQTT client
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 client.on_subscribe = on_subscribe
 
+# Attempt to connect to MQTT broker
 print("Attempting to connect to MQTT broker...")
 try:
-    client.connect(MQTT_BROKER, 1883, 60)
+    client.connect(MQTT_BROKER, MQTT_PORT, 60)
     client.loop_forever()
 except Exception as e:
     print(f"Connection Error: {e}")
