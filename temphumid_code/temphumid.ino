@@ -1,72 +1,90 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <ArduinoJson.h>
 #include <DHT.h>
-#include <Servo.h>
+// #include <Stepper.h>
 
-// WiFi credentials
-const char* ssid = "Samarth's iPhone";
-const char* password = "abcdef123";
+// #define STEPS_PER_REV 2048  // Full steps per revolution
 
-// MQTT broker details
-const char* mqtt_server = "172.20.10.2";
-const char* mqtt_topic = "climate_control/temp_humidity";
-const char* actuator_topic = "climate_control/fan_cmd";  // New actuator command topic
+// Stepper myStepper(STEPS_PER_REV, 33, 25, 26, 12); // IN1, IN2, IN3, IN4
+
+#define DHTPIN 4  // Change this to the pin connected to the DHT sensor
+#define DHTTYPE DHT22  // Use DHT22 depending on your sensor
+DHT dht(DHTPIN, DHTTYPE);
+
+const char* ssid = "A35";
+const char* password = "ghephukat";
+const char* mqtt_broker = "192.168.51.225";
+const char* temp_humid_topic = "temphumid_code/temp_humidity";
+const char* fan_control_topic = "temphumid_code/fan_control";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-// DHT Sensor settings
-#define DHTPIN 4
-#define DHTTYPE DHT22
-DHT dht(DHTPIN, DHTTYPE);
+const int LED_PIN = 2;  // Change to your LED pin
 
-// Servo settings
-#define SERVO_PIN 5
-Servo fanServo;
-
-// Handle MQTT messages (Fan control)
-void callback(char* topic, byte* payload, unsigned int length) {
-    String message = "";
-    for (int i = 0; i < length; i++) {
-        message += (char)payload[i];
-    }
-
-    Serial.print("Received command: ");
-    Serial.println(message);
-
-    if (message == "FAN_ON") {
-        fanServo.write(90);
-    } else if (message == "FAN_OFF") {
-        fanServo.write(0);
-    }
-}
-
-void setup() {
-    Serial.begin(115200);
-    WiFi.begin(ssid, password);
-
+void connectWiFi() {
     Serial.print("Connecting to WiFi...");
+    WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
         Serial.print(".");
     }
-    Serial.println(" Connected!");
-
-    client.setServer(mqtt_server, 1883);
-    client.setCallback(callback);
-    reconnect();
-
-    dht.begin();
-    fanServo.attach(SERVO_PIN);
-    fanServo.write(0);  // Default to OFF
+    Serial.println("\nWiFi connected!");
 }
 
-void loop() {
-    if (!client.connected()) {
-        reconnect();
+void connectMQTT() {
+    client.setServer(mqtt_broker, 1883);
+    client.setCallback(callback);
+    
+    while (!client.connected()) {
+        Serial.print("Connecting to MQTT...");
+        if (client.connect("ESP32_Client")) {
+            Serial.println("Connected to MQTT broker!");
+            client.subscribe(fan_control_topic);
+            Serial.println("Subscribed to fan control topic.");
+        } else {
+            Serial.print("Failed, rc=");
+            Serial.print(client.state());
+            Serial.println(" Retrying in 5 seconds...");
+            delay(5000);
+        }
     }
-    client.loop();
+}
 
+void callback(char* topic, byte* payload, unsigned int length) {
+    Serial.println("=== CALLBACK FUNCTION TRIGGERED ===");
+    Serial.print("Message received on topic: ");
+    Serial.println(topic);
+
+    char message[length + 1];
+    memcpy(message, payload, length);
+    message[length] = '\0';
+
+    Serial.print("Payload: ");
+    Serial.println(message);
+
+    StaticJsonDocument<200> doc;
+    DeserializationError error = deserializeJson(doc, message);
+
+    if (!error && doc.containsKey("fan")) {
+        String fanStatus = doc["fan"].as<String>();
+        Serial.print("Fan Status: ");
+        Serial.println(fanStatus);
+
+        if (fanStatus == "ON") {
+            digitalWrite(LED_PIN, HIGH);
+            Serial.println("LED turned ON");
+        } else {
+            digitalWrite(LED_PIN, LOW);
+            Serial.println("LED turned OFF");
+        }
+    } else {
+        Serial.println("JSON parsing failed.");
+    }
+}
+
+void publishSensorData() {
     float temperature = dht.readTemperature();
     float humidity = dht.readHumidity();
 
@@ -75,26 +93,34 @@ void loop() {
         return;
     }
 
-    // Publish temperature and humidity as JSON
-    String payload = "{\"temperature\":" + String(temperature) + ", \"humidity\":" + String(humidity) + "}";
-    client.publish(mqtt_topic, payload.c_str());
-
-    Serial.println("Published: " + payload);
+    StaticJsonDocument<200> doc;
+    doc["temperature"] = temperature;
+    doc["humidity"] = humidity;
     
-    delay(5000);  // Send data every 5 seconds
+    char buffer[256];
+    serializeJson(doc, buffer);
+    
+    Serial.print("Publishing: ");
+    Serial.println(buffer);
+    
+    client.publish(temp_humid_topic, buffer);
 }
 
-void reconnect() {
-    while (!client.connected()) {
-        Serial.print("Attempting MQTT connection...");
-        if (client.connect("ESP32_Client")) {
-            Serial.println(" connected!");
-            client.subscribe(actuator_topic);
-        } else {
-            Serial.print(" failed, rc=");
-            Serial.print(client.state());
-            Serial.println(" trying again in 5 seconds");
-            delay(5000);
-        }
+void setup() {
+    Serial.begin(115200);
+    pinMode(LED_PIN, OUTPUT);
+    dht.begin();
+    connectWiFi();
+    connectMQTT();
+}
+
+void loop() {
+    if (!client.connected()) {
+        connectMQTT();
     }
+    client.loop();
+    
+    // Publish sensor data every 5 seconds
+    publishSensorData();
+    delay(1000);
 }

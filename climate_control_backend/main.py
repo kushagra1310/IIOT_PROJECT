@@ -31,7 +31,7 @@ def on_message(client, userdata, msg):
 
             print(f"Temperature: {temperature}°C, Humidity: {humidity}%")
 
-            fan_status = "ON" if temperature >= 25 else "OFF"
+            fan_status = "ON" if temperature <= 25 and temperature>=18 else "OFF"
             
             fan_message = json.dumps({"fan": fan_status})
             client.publish(FAN_CONTROL_TOPIC, fan_message)
