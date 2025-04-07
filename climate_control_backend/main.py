@@ -14,11 +14,12 @@ TEMP_HUMID_TOPIC = "temphumid_code/temp_humidity"
 WINDOW_CONTROL_TOPIC = "temphumid_code/window_control"
 FAN_CONTROL_TOPIC = "temphumid_code/fan_control"
 PEOPLE_TOPIC = "room/peopleCount"
-AC_TOPIC = "room/ac_control  "
+AC_TOPIC = "room/ac_control"
+
 # Store readings
 last_co2_ppm = 0
 number_of_people = 0  # Initialize people count to zero
-
+ac_status = 0
 # Callback when the client connects to the broker
 def on_connect(client, userdata, flags, rc):
     print(f"Connection Status: {mqtt.connack_string(rc)}")
@@ -31,7 +32,7 @@ def on_connect(client, userdata, flags, rc):
 
 # Callback when a message is received
 def on_message(client, userdata, msg):
-    global last_co2_ppm, number_of_people  # Use global variables for state tracking
+    global last_co2_ppm, number_of_people, ac_status  # Use global variables for state tracking
 
     print("=" * 50)
     print(f"Message Received! Topic: {msg.topic}")
@@ -100,7 +101,12 @@ def on_message(client, userdata, msg):
                         fan_status = "ON"
                     else:
                         fan_status = "OFF"
-
+                    # AC control logic
+                    print(temperature)
+                    if temperature >=28:
+                        ac_status = "22"
+                    else:
+                        ac_status = "0"
                 # Publish window status
                 window_message = json.dumps({"window": window_status})
                 client.publish(WINDOW_CONTROL_TOPIC, window_message)
@@ -109,6 +115,10 @@ def on_message(client, userdata, msg):
                 # Publish fan status
                 client.publish(FAN_CONTROL_TOPIC, fan_status)
                 print(f"Fan status set to: {fan_status}")
+
+                #Publish ac status
+                client.publish(AC_TOPIC, ac_status)
+                print(f"AC status set to: {ac_status}")
 
     except Exception as e:
         print(f"Error processing message: {e}")
