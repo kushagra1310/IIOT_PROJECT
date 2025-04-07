@@ -12,7 +12,8 @@ MQTT_PORT = 1883
 CO2_TOPIC = "sensor/co2"
 TEMP_HUMID_TOPIC = "temphumid_code/temp_humidity"
 WINDOW_CONTROL_TOPIC = "temphumid_code/window_control"
-
+FAN_CONTROL_TOPIC = "temphumid_code/fan_control"
+PEOPLE_TOPIC = "room/peopleCount"
 # Store last CO₂ reading
 last_co2_ppm = 0
 
@@ -22,7 +23,7 @@ def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print(f"Connected to MQTT Broker: {MQTT_BROKER}")
         print(f"Subscribing to: {CO2_TOPIC} and {TEMP_HUMID_TOPIC}")
-        client.subscribe([(CO2_TOPIC, 0), (TEMP_HUMID_TOPIC, 0)])
+        client.subscribe([(CO2_TOPIC, 0), (TEMP_HUMID_TOPIC, 0), (PEOPLE_TOPIC,0)])
     else:
         print("Connection failed")
 
@@ -45,7 +46,9 @@ def on_message(client, userdata, msg):
 
             if last_co2_ppm > 1000:
                 print("⚠ Warning: High CO₂ Level Detected!")
-
+        elif msg.topic == PEOPLE_TOPIC:
+            number_of_people = str(decoded_payload)
+            print(f"Number of people: {number_of_people}")
         # Process Temperature & Humidity messages
         elif msg.topic == TEMP_HUMID_TOPIC:
             parsed_data = json.loads(decoded_payload)
@@ -68,10 +71,18 @@ def on_message(client, userdata, msg):
                 else:
                     window_status = "CLOSE"
 
+                if temperature >=23 and temperature <28:
+                    fan_status= "ON"
+                else:
+                    fan_status="OFF"
                 # Publish window status
                 window_message = json.dumps({"window": window_status})
                 client.publish(WINDOW_CONTROL_TOPIC, window_message)
                 print(f"Window status set to: {window_status}")
+                #publish fan status
+                fan_message=json.dumps({"fan": fan_status})
+                client.publish(FAN_CONTROL_TOPIC, fan_status)
+                print(f"Fan status set to: {fan_status}")
 
     except Exception as e:
         print(f"Error processing message: {e}")
