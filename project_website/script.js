@@ -6,7 +6,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const navLinks = document.querySelectorAll(".circle-link");
     const sections = document.querySelectorAll(".section");
     const backButtons = document.querySelectorAll(".back-button");
+    const autoBackButton = document.querySelector(".auto-back-button");
 
+    // Make sure everything is properly hidden at the start
     modeSelection.style.display = "none";
     circleNav.style.display = "none";
     sections.forEach(section => section.style.display = "none");
@@ -18,30 +20,53 @@ document.addEventListener("DOMContentLoaded", function() {
         setTimeout(() => {
             landingPage.style.display = "none";
             modeSelection.style.display = "flex";
-            modeSelection.style.animation = "fadeIn 0.8s ease forwards";
-        }, 1000);
+            modeSelection.style.opacity = "0";
+            
+            // Force reflow to ensure the opacity transition works
+            void modeSelection.offsetWidth;
+            
+            modeSelection.style.opacity = "1";
+        }, 800);
     });
 
     document.getElementById("manual-mode").addEventListener("click", function() {
-        modeSelection.style.animation = "fadeOut 0.5s ease forwards";
+        modeSelection.style.opacity = "0";
 
         setTimeout(() => {
             modeSelection.style.display = "none";
             circleNav.style.display = "block";
+            circleNav.style.opacity = "0";
+            
+            // Force reflow
+            void circleNav.offsetWidth;
+            
+            circleNav.style.opacity = "1";
             animateNavLinks();
         }, 500);
     });
 
     document.getElementById("auto-mode").addEventListener("click", function() {
-        alert("Automated mode selected!");
+        modeSelection.style.opacity = "0";
+        
+        setTimeout(() => {
+            modeSelection.style.display = "none";
+            const autoSection = document.getElementById("automated-mode");
+            autoSection.style.display = "block";
+            autoSection.style.opacity = "0";
+            
+            // Force reflow
+            void autoSection.offsetWidth;
+            
+            autoSection.style.opacity = "1";
+        }, 500);
     });
 
+    // Fix the circle link click handlers
     navLinks.forEach(link => {
         link.addEventListener("click", function(e) {
             e.preventDefault();
             const sectionId = this.getAttribute("data-section");
-
-            circleNav.style.transition = "all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55)";
+            
             circleNav.style.opacity = "0";
             circleNav.style.transform = "translate(-50%, -50%) scale(0.5) rotate(180deg)";
 
@@ -49,7 +74,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 circleNav.style.display = "none";
                 const activeSection = document.getElementById(sectionId);
                 activeSection.style.display = "block";
-                activeSection.style.animation = "fadeIn 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards";
+                activeSection.style.opacity = "0";
+                
+                // Force reflow
+                void activeSection.offsetWidth;
+                
+                activeSection.style.opacity = "1";
             }, 500);
         });
     });
@@ -57,29 +87,61 @@ document.addEventListener("DOMContentLoaded", function() {
     backButtons.forEach(button => {
         button.addEventListener("click", function() {
             const currentSection = this.closest(".section");
-            currentSection.style.animation = "fadeOut 0.5s ease forwards";
+            currentSection.style.opacity = "0";
 
             setTimeout(() => {
                 currentSection.style.display = "none";
                 circleNav.style.display = "block";
-                circleNav.style.animation = "scaleIn 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards";
+                circleNav.style.transform = "translate(-50%, -50%)";
+                circleNav.style.opacity = "0";
+                
+                // Force reflow
+                void circleNav.offsetWidth;
+                
+                circleNav.style.opacity = "1";
                 animateNavLinks();
             }, 500);
         });
     });
 
+    autoBackButton.addEventListener("click", function() {
+        const currentSection = this.closest(".section");
+        currentSection.style.opacity = "0";
+
+        setTimeout(() => {
+            currentSection.style.display = "none";
+            modeSelection.style.display = "flex";
+            modeSelection.style.opacity = "0";
+            
+            // Force reflow
+            void modeSelection.offsetWidth;
+            
+            modeSelection.style.opacity = "1";
+        }, 500);
+    });
+
     function animateNavLinks() {
         navLinks.forEach((link, index) => {
-            link.style.animation = `linkAppear 0.8s ease forwards ${index * 0.15}s`;
-
+            link.style.transform = "scale(0)";
+            link.style.opacity = "0";
+            
+            setTimeout(() => {
+                link.style.animation = `linkAppear 0.8s ease forwards ${index * 0.15}s`;
+            }, 10);
+            
+            // Add hover effects directly
             link.addEventListener('mouseenter', () => {
                 link.style.transform = 'scale(1.1)';
-                link.querySelector('span').style.transform = 'scale(1.2)';
+                if (link.querySelector('span')) {
+                    link.querySelector('span').style.transform = 'scale(1.2)';
+                }
             });
 
             link.addEventListener('mouseleave', () => {
                 link.style.transform = 'scale(1)';
-                link.querySelector('span').style.transform = 'scale(1)';
+                if (link.querySelector('span')) {
+                    link.querySelector('span').style.transform = 'scale(1)';
+                }
             });
         });
     }

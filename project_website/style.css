@@ -21,6 +21,8 @@ body {
     align-items: center;
     background: rgba(10, 10, 26, 0.95);
     z-index: 950;
+    opacity: 0; /* Fix 1: Set initial opacity */
+    transition: opacity 0.8s ease; /* Fix 2: Add transition for smoother fades */
 }
 
 .mode-btn {
@@ -36,6 +38,16 @@ body {
     box-shadow: 0 0 15px #0ff;
     text-transform: uppercase;
     font-family: 'Orbitron', sans-serif;
+    outline: none; /* Fix 3: Remove focus outline */
+}
+
+.mode-btn:hover {
+    background: rgba(0, 255, 255, 0.2); /* Fix 4: Add hover effect */
+    transform: scale(1.05);
+}
+
+.mode-btn:active {
+    transform: scale(0.98); /* Fix 5: Add click effect */
 }
 
 /* Landing Page */
@@ -61,13 +73,18 @@ body {
 
 #landing-page h1 {
     font-size: 3.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 5rem;
     font-family: 'Orbitron', sans-serif;
     text-transform: uppercase;
     letter-spacing: 4px;
-    color: #0ff;
+    color: #ddd;
     text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
     animation: textGlow 2s infinite alternate;
+}
+
+@keyframes textGlow { /* Fix 6: Add missing keyframe */
+    from { text-shadow: 0 0 10px #0ff, 0 0 20px #0ff; }
+    to { text-shadow: 0 0 15px #0ff, 0 0 30px #0ff, 0 0 40px #0ff; }
 }
 
 #landing-page p {
@@ -91,11 +108,24 @@ body {
     text-shadow: 0 0 10px #0ff;
     box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset;
     animation: buttonPulse 3s infinite;
+    outline: none; /* Fix 7: Remove focus outline */
+}
+
+@keyframes buttonPulse { /* Fix 8: Add missing keyframe */
+    0% { box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset; }
+    50% { box-shadow: 0 0 25px #0ff, 0 0 40px #0ff inset; }
+    100% { box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset; }
 }
 
 #start-button:hover {
     background-color: rgba(0, 255, 255, 0.2);
     transform: scale(1.05);
+}
+
+#start-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed; /* Fix 9: Improve disabled state */
+    animation: none;
 }
 
 /* Enhanced Circular Navigation */
@@ -109,6 +139,8 @@ body {
     border-radius: 50%;
     display: none;
     z-index: 900;
+    opacity: 0; /* Fix 10: Set initial opacity */
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Fix 11: Add transition */
 }
 
 .circle-center {
@@ -187,6 +219,7 @@ body {
 .circle-link span {
     transition: all 0.3s ease;
     z-index: 906;
+    pointer-events: none; /* Fix 12: Prevent text from triggering events */
 }
 
 .circle-link:hover {
@@ -222,10 +255,24 @@ body {
     left: 8%;
 }
 
-#ac-control, #fan-control, #window-control, #stats {
+#ac-control, #fan-control, #window-control, #stats, #automated-mode {
     background-image: linear-gradient(rgba(10, 10, 26, 0.9), rgba(10, 10, 26, 0.9));
     padding: 2rem;
     min-height: 100vh;
+    opacity: 0; /* Fix 13: Set initial opacity */
+    transition: opacity 0.5s ease; /* Fix 14: Add transition */
+}
+
+.section-content {
+    padding-top: 2rem; /* Fix 15: Add top padding */
+}
+
+.section-content h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #0ff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    font-size: 2rem;
 }
 
 .control-panel {
@@ -244,6 +291,9 @@ body {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     margin: 2rem 0;
+    -webkit-appearance: none; /* Fix 16: Add for cross-browser compatibility */
+    appearance: none;
+    outline: none; /* Fix 17: Remove focus outline */
 }
 
 .slider::-webkit-slider-thumb {
@@ -253,6 +303,17 @@ body {
     background: #0ff;
     border-radius: 50%;
     cursor: pointer;
+    box-shadow: 0 0 10px #0ff; /* Fix 18: Add glow effect */
+}
+
+.slider::-moz-range-thumb { /* Fix 19: Add Firefox support */
+    width: 25px;
+    height: 25px;
+    background: #0ff;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 10px #0ff;
 }
 
 .status-indicator {
@@ -270,6 +331,52 @@ body {
 
 .off {
     background: rgba(255, 255, 255, 0.1);
+}
+
+.back-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 12px 24px;
+    background: rgba(0, 255, 255, 0.2);
+    color: #0ff;
+    border: 1px solid #0ff;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    z-index: 800;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    outline: none; /* Fix 20: Remove focus outline */
+}
+
+.back-button:hover {
+    background: rgba(0, 255, 255, 0.4);
+    transform: translateX(-5px);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.auto-back-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 12px 24px;
+    background: rgba(0, 255, 255, 0.2);
+    color: #0ff;
+    border: 1px solid #0ff;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    z-index: 800;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    outline: none; /* Fix 21: Remove focus outline */
+}
+
+.auto-back-button:hover {
+    background: rgba(0, 255, 255, 0.4);
+    transform: translateX(-5px);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
 }
 
 @keyframes pulse {
@@ -294,6 +401,158 @@ body {
 }
 
 @keyframes scaleIn {
-    from { transform: scale(0.5); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+    from { 
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0; 
+    }
+    to { 
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1; 
+    }
+}
+
+/* Enhanced Toggle Buttons */
+.toggle-container {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    margin: 2rem 0;
+}
+
+.cool-toggle {
+    padding: 15px 30px;
+    border: 2px solid #0ff;
+    background: transparent;
+    color: #0ff;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    outline: none; /* Fix 22: Remove focus outline */
+}
+
+.cool-toggle.on {
+    background: rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 25px #0ff;
+}
+
+.cool-toggle.off {
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.cool-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0, 255, 255, 0.2) 50%, 
+        transparent 100%);
+    transition: 0.5s;
+}
+
+.cool-toggle:hover::before {
+    left: 100%;
+}
+
+.toggle-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #0ff;
+    opacity: 0.1;
+    filter: blur(20px);
+    z-index: -1;
+}
+
+/* Sensor Grid Layout */
+.sensor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 2rem;
+}
+
+.sensor-item {
+    background: rgba(0, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #0ff;
+    position: relative;
+    transition: all 0.3s ease; /* Fix 23: Add transition */
+}
+
+.sensor-item:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Fix 24: Add hover effect */
+    transform: translateY(-3px);
+}
+
+.sensor-label {
+    color: #0ff;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.sensor-value {
+    font-size: 1.8rem;
+    font-family: 'Orbitron', sans-serif;
+    color: #0ff;
+}
+
+.status-indicator.small {
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.device-status {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+    #circle-nav {
+        width: 400px; /* Fix 25: Reduce size on smaller screens */
+        height: 400px;
+    }
+    
+    .circle-link {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    #circle-nav {
+        width: 300px; /* Fix 26: Further reduce size on mobile */
+        height: 300px;
+    }
+    
+    .circle-link {
+        width: 80px;
+        height: 80px;
+        font-size: 0.9rem;
+    }
+
+    .circle-center {
+        width: 90px;
+        height: 90px;
+    }
 }
