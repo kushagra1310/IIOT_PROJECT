@@ -1,0 +1,299 @@
+body {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: #0a0a1a;
+    color: #0ff;
+}
+
+.hidden {
+    display: none;
+}
+
+#mode-selection {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(10, 10, 26, 0.95);
+    z-index: 950;
+}
+
+.mode-btn {
+    padding: 20px 40px;
+    margin: 20px;
+    font-size: 1.5rem;
+    background: transparent;
+    border: 2px solid #0ff;
+    color: #0ff;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px #0ff;
+    text-transform: uppercase;
+    font-family: 'Orbitron', sans-serif;
+}
+
+/* Landing Page */
+#landing-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('load_bg1.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 1000;
+    transition: opacity 1s ease;
+}
+
+#landing-page h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: #0ff;
+    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+    animation: textGlow 2s infinite alternate;
+}
+
+#landing-page p {
+    font-size: 1.5rem;
+    font-family: 'Orbitron', sans-serif;
+    margin-bottom: 2rem;
+    color: #ddd;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+#start-button {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-family: 'Orbitron', sans-serif;
+    background-color: transparent;
+    color: #0ff;
+    border: 2px solid #0ff;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 10px #0ff;
+    box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset;
+    animation: buttonPulse 3s infinite;
+}
+
+#start-button:hover {
+    background-color: rgba(0, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+/* Enhanced Circular Navigation */
+#circle-nav {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    display: none;
+    z-index: 900;
+}
+
+.circle-center {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid #0ff;
+    box-shadow: 0 0 30px #0ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 901;
+}
+
+.center-text {
+    font-family: 'Orbitron', sans-serif;
+    color: #0ff;
+    font-size: 1.2rem;
+    text-shadow: 0 0 10px #0ff;
+    z-index: 903;
+}
+
+.center-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #0ff;
+    opacity: 0.1;
+    z-index: 902;
+    animation: pulse 4s infinite alternate;
+}
+
+.circle-link {
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: rgba(36, 41, 46, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: #0ff;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: bold;
+    transition: all 0.5s ease;
+    box-shadow: 0 0 20px #0ff;
+    border: 1px solid #0ff;
+    opacity: 0;
+    transform: scale(0);
+    z-index: 905;
+}
+
+.link-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #0ff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.circle-link:hover .link-glow {
+    opacity: 0.2;
+    animation: pulse 2s infinite;
+}
+
+.circle-link span {
+    transition: all 0.3s ease;
+    z-index: 906;
+}
+
+.circle-link:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 0 30px #0ff;
+}
+
+.circle-link:hover span {
+    transform: scale(1.2);
+    text-shadow: 0 0 10px #0ff;
+}
+
+/* Positioning for 5 links */
+.circle-link:nth-child(2) { /* About */
+    top: 7%;
+    left: 37%;
+    transform: translateX(-50%);
+}
+.circle-link:nth-child(3) { /* Hometown */
+    top: 30%;
+    right: 8%;
+}
+.circle-link:nth-child(4) { /* Education */
+    bottom: 12%;
+    right: 20%;
+}
+.circle-link:nth-child(5) { /* Skills */
+    bottom: 12%;
+    left: 20%;
+}
+.circle-link:nth-child(6) { /* CV */
+    top: 30%;
+    left: 8%;
+}
+
+#ac-control, #fan-control, #window-control, #stats {
+    background-image: linear-gradient(rgba(10, 10, 26, 0.9), rgba(10, 10, 26, 0.9));
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+.control-panel {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: rgba(0, 255, 255, 0.05);
+    border-radius: 15px;
+    border: 1px solid #0ff;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+}
+
+.slider {
+    width: 100%;
+    height: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin: 2rem 0;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #0ff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.status-indicator {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 1rem auto;
+    border: 2px solid #0ff;
+    animation: pulse 2s infinite;
+}
+
+.on {
+    background: rgba(0, 255, 255, 0.3);
+}
+
+.off {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 5px #0ff; }
+    50% { box-shadow: 0 0 25px #0ff; }
+    100% { box-shadow: 0 0 5px #0ff; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes linkAppear {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}

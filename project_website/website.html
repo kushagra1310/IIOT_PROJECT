@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Control System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Landing Page (Unchanged) -->
+    <div id="landing-page">
+        <!-- Existing landing page content -->
+        <button id="start-button">Start</button>
+    </div>
+
+    <!-- Mode Selection -->
+    <div id="mode-selection">
+        <h2 style="color: #0ff; font-size: 2.5rem; margin-bottom: 2rem;">SELECT OPERATION MODE</h2>
+        <button class="mode-btn" id="manual-mode">MANUAL CONTROL</button>
+        <button class="mode-btn" id="auto-mode">AUTOMATED SYSTEM</button>
+    </div>
+
+    <!-- Weather Control Navigation -->
+    <div id="circle-nav" class="hidden">
+        <div class="circle-center">
+            <div class="center-text">Controls</div>
+            <div class="center-glow"></div>
+        </div>
+        <a href="#" class="circle-link" data-section="ac-control">
+            <span>AC</span>
+            <div class="link-glow"></div>
+        </a>
+        <a href="#" class="circle-link" data-section="fan-control">
+            <span>Fan</span>
+            <div class="link-glow"></div>
+        </a>
+        <a href="#" class="circle-link" data-section="window-control">
+            <span>Window</span>
+            <div class="link-glow"></div>
+        </a>
+        <a href="#" class="circle-link" data-section="stats">
+            <span>Stats</span>
+            <div class="link-glow"></div>
+        </a>
+        <a href="#" class="circle-link" data-section="Auto Mode">
+            <span>Auto Mode</span>
+            <div class="link-glow"></div>
+        </a>
+    </div>
+
+    <!-- Weather Control Sections -->
+    <div id="content">
+        <!-- AC Control Section -->
+        <section id="ac-control" class="section hidden">
+            <button class="back-button">← BACK</button>
+            <div class="section-content">
+                <h2>Air Conditioning Control</h2>
+                <div class="control-panel">
+                    <label style="color: #0ff;">Temperature Control</label>
+                    <input type="range" min="16" max="30" value="22" class="slider">
+                    <div class="status-indicator on"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fan Control Section -->
+        <section id="fan-control" class="section hidden">
+            <button class="back-button">← BACK</button>
+            <div class="section-content">
+                <h2>Fan Speed Control</h2>
+                <div class="control-panel">
+                    <label style="color: #0ff;">Fan Speed</label>
+                    <input type="range" min="0" max="5" value="3" class="slider">
+                    <div class="status-indicator off"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Window Control Section -->
+        <section id="window-control" class="section hidden">
+            <button class="back-button">← BACK</button>
+            <div class="section-content">
+                <h2>Window Control</h2>
+                <div class="control-panel">
+                    <label style="color: #0ff;">Window Status</label>
+                    <div style="display: flex; gap: 20px; justify-content: center; margin: 2rem 0;">
+                        <button class="mode-btn" style="margin: 0;">OPEN</button>
+                        <button class="mode-btn" style="margin: 0;">CLOSE</button>
+                    </div>
+                    <div class="status-indicator off"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section id="stats" class="section hidden">
+            <button class="back-button">← BACK</button>
+            <div class="section-content">
+                <h2>System Statistics</h2>
+                <div class="control-panel">
+                    <canvas id="stats-chart" width="400" height="200"></canvas>
+                    <div class="animated-list">
+                        <li>Current Temperature: 22°C</li>
+                        <li>Humidity: 45%</li>
+                        <li>Power Usage: 2.4kW</li>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
