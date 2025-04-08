@@ -35,6 +35,9 @@ document.addEventListener("DOMContentLoaded", function() {
         setTimeout(() => {
             modeSelection.style.display = "none";
             circleNav.style.display = "block";
+            
+            // Reset the transform properly before showing
+            circleNav.style.transform = "translate(-50%, -50%)";
             circleNav.style.opacity = "0";
             
             // Force reflow
@@ -92,6 +95,8 @@ document.addEventListener("DOMContentLoaded", function() {
             setTimeout(() => {
                 currentSection.style.display = "none";
                 circleNav.style.display = "block";
+                
+                // Reset transform fully to initial state
                 circleNav.style.transform = "translate(-50%, -50%)";
                 circleNav.style.opacity = "0";
                 
@@ -129,6 +134,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 link.style.animation = `linkAppear 0.8s ease forwards ${index * 0.15}s`;
             }, 10);
             
+            // Reset any previous inline styles that might interfere
+            link.addEventListener('animationend', function() {
+                // Once animation completes, ensure we're at the right scale
+                link.style.transform = "scale(1)";
+                link.style.opacity = "1";
+            }, {once: true});
+            
             // Add hover effects directly
             link.addEventListener('mouseenter', () => {
                 link.style.transform = 'scale(1.1)';
@@ -145,4 +157,66 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     }
+
+    // Add event listeners for sliders and toggles for a more interactive demo
+    
+    // Temperature slider
+    const tempSlider = document.getElementById("temp-slider");
+    const tempValue = document.getElementById("temp-value");
+    if (tempSlider && tempValue) {
+        tempSlider.addEventListener("input", function() {
+            tempValue.textContent = this.value + "°C";
+        });
+    }
+    
+    // Fan speed slider
+    const fanSpeedSlider = document.getElementById("fan-speed-slider");
+    const fanSpeedValue = document.getElementById("fan-speed-value");
+    if (fanSpeedSlider && fanSpeedValue) {
+        fanSpeedSlider.addEventListener("input", function() {
+            const value = this.value;
+            let speedText = "Medium";
+            if (value <= 2) speedText = "Low";
+            else if (value >= 4) speedText = "High";
+            fanSpeedValue.textContent = `${speedText} (${value})`;
+        });
+    }
+    
+    // Window slider
+    const windowSlider = document.getElementById("window-slider");
+    const windowValue = document.getElementById("window-value");
+    if (windowSlider && windowValue) {
+        windowSlider.addEventListener("input", function() {
+            windowValue.textContent = this.value + "%";
+        });
+    }
+    
+    // Auto temperature slider
+    const autoTempSlider = document.getElementById("auto-temp-slider");
+    const autoTempValue = document.getElementById("auto-temp-value");
+    if (autoTempSlider && autoTempValue) {
+        autoTempSlider.addEventListener("input", function() {
+            autoTempValue.textContent = this.value + "°C";
+        });
+    }
+    
+    // Toggle buttons
+    const toggleButtons = document.querySelectorAll(".cool-toggle");
+    toggleButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            // Get all siblings in the toggle container
+            const container = this.closest(".toggle-container");
+            const siblings = container.querySelectorAll(".cool-toggle");
+            
+            // Remove 'on' class and add 'off' class to all siblings
+            siblings.forEach(sibling => {
+                sibling.classList.remove("on");
+                sibling.classList.add("off");
+            });
+            
+            // Add 'on' class and remove 'off' class from the clicked button
+            this.classList.add("on");
+            this.classList.remove("off");
+        });
+    });
 });
