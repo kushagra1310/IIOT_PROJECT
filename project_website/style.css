@@ -554,3 +554,58 @@ body {
         height: 90px;
     }
 }
+
+.led-display {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.led-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+.led {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #333;
+    border: 2px solid #0ff;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.led.active {
+    background-color: #0ff;
+    box-shadow: 0 0 15px #0ff;
+}
+
+.sensor-details {
+    color: #0ff;
+    margin-top: 1rem;
+    text-align: left;
+    padding: 0 1rem;
+}
+
+.detail-label {
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+.logic-info {
+    color: #0ff;
+    text-align: left;
+    padding: 0 1rem;
+    margin-top: 1rem;
+}
+
+.logic-info ul {
+    margin-left: 2rem;
+    margin-bottom: 1rem;
+}
+
+.logic-info li {
+    margin-bottom: 0.5rem;
+}
