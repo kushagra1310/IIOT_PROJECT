@@ -19,13 +19,13 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Start button clicked"); // Debug log
     startButton.disabled = true;
     landingPage.style.opacity = "0";
-    landingPage.style.transition = "opacity 0.5s ease"; // Add transition
+    landingPage.style.transition = "opacity 0.5s ease";
 
     setTimeout(() => {
       landingPage.style.display = "none";
       modeSelection.style.display = "flex";
       modeSelection.style.opacity = "0";
-      modeSelection.style.transition = "opacity 0.5s ease"; // Add transition
+      modeSelection.style.transition = "opacity 0.5s ease";
       
       // Force reflow
       void modeSelection.offsetWidth;
@@ -193,8 +193,20 @@ document.addEventListener("DOMContentLoaded", function () {
   try {
     mqttClient = mqtt.connect(mqttBrokerUrl);
     console.log("Attempting to connect to MQTT broker");
+    
+    mqttClient.on("connect", function () {
+      console.log("Connected to MQTT broker");
+    });
+    
+    mqttClient.on("error", function (error) {
+      console.error("MQTT Error:", error);
+    });
+    
+    mqttClient.on("close", function () {
+      console.log("MQTT connection closed");
+    });
   } catch (error) {
-    console.error("Error connecting to MQTT broker:", error);
+    console.error("Error initializing MQTT client:", error);
   }
   
   // Current mode (manual or automatic)
