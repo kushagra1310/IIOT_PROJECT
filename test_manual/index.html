@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <button id="ledBtn">Toggle LED</button>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.7/mqtt.min.js"></script>
+  <script>
+    const client = mqtt.connect('ws://BROKER_IP:8083');
+    let ledState = false;
+    
+    document.getElementById('ledBtn').addEventListener('click', () => {
+      ledState = !ledState;
+      client.publish('esp32/led', ledState ? 'on' : 'off');
+    });
+  </script>
+</body>
+</html>

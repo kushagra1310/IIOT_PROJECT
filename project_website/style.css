@@ -82,7 +82,7 @@ body {
     animation: textGlow 2s infinite alternate;
 }
 
-@keyframes textGlow { /* Fix 6: Add missing keyframe */
+@keyframes textGlow {
     from { text-shadow: 0 0 10px #0ff, 0 0 20px #0ff; }
     to { text-shadow: 0 0 15px #0ff, 0 0 30px #0ff, 0 0 40px #0ff; }
 }
@@ -111,7 +111,7 @@ body {
     outline: none; /* Fix 7: Remove focus outline */
 }
 
-@keyframes buttonPulse { /* Fix 8: Add missing keyframe */
+@keyframes buttonPulse {
     0% { box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset; }
     50% { box-shadow: 0 0 25px #0ff, 0 0 40px #0ff inset; }
     100% { box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset; }
@@ -124,7 +124,7 @@ body {
 
 #start-button:disabled {
     opacity: 0.5;
-    cursor: not-allowed; /* Fix 9: Improve disabled state */
+    cursor: not-allowed;
     animation: none;
 }
 
@@ -139,8 +139,8 @@ body {
     border-radius: 50%;
     display: none;
     z-index: 900;
-    opacity: 0; /* Fix 10: Set initial opacity */
-    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Fix 11: Add transition */
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 .circle-center {
@@ -219,7 +219,7 @@ body {
 .circle-link span {
     transition: all 0.3s ease;
     z-index: 906;
-    pointer-events: none; /* Fix 12: Prevent text from triggering events */
+    pointer-events: none;
 }
 
 .circle-link:hover {
@@ -233,24 +233,24 @@ body {
 }
 
 /* Positioning for 5 links */
-.circle-link:nth-child(2) { /* About */
+.circle-link:nth-child(2) {
     top: 7%;
     left: 37%;
     transform: translateX(-50%);
 }
-.circle-link:nth-child(3) { /* Hometown */
+.circle-link:nth-child(3) {
     top: 30%;
     right: 8%;
 }
-.circle-link:nth-child(4) { /* Education */
+.circle-link:nth-child(4) {
     bottom: 12%;
     right: 20%;
 }
-.circle-link:nth-child(5) { /* Skills */
+.circle-link:nth-child(5) {
     bottom: 12%;
     left: 20%;
 }
-.circle-link:nth-child(6) { /* CV */
+.circle-link:nth-child(6) {
     top: 30%;
     left: 8%;
 }
@@ -259,12 +259,12 @@ body {
     background-image: linear-gradient(rgba(10, 10, 26, 0.9), rgba(10, 10, 26, 0.9));
     padding: 2rem;
     min-height: 100vh;
-    opacity: 0; /* Fix 13: Set initial opacity */
-    transition: opacity 0.5s ease; /* Fix 14: Add transition */
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
 .section-content {
-    padding-top: 2rem; /* Fix 15: Add top padding */
+    padding-top: 2rem;
 }
 
 .section-content h2 {
@@ -291,9 +291,9 @@ body {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     margin: 2rem 0;
-    -webkit-appearance: none; /* Fix 16: Add for cross-browser compatibility */
+    -webkit-appearance: none;
     appearance: none;
-    outline: none; /* Fix 17: Remove focus outline */
+    outline: none;
 }
 
 .slider::-webkit-slider-thumb {
@@ -303,10 +303,10 @@ body {
     background: #0ff;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 0 10px #0ff; /* Fix 18: Add glow effect */
+    box-shadow: 0 0 10px #0ff;
 }
 
-.slider::-moz-range-thumb { /* Fix 19: Add Firefox support */
+.slider::-moz-range-thumb {
     width: 25px;
     height: 25px;
     background: #0ff;
@@ -347,7 +347,7 @@ body {
     z-index: 800;
     transition: all 0.3s ease;
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-    outline: none; /* Fix 20: Remove focus outline */
+    outline: none;
 }
 
 .back-button:hover {
@@ -370,7 +370,7 @@ body {
     z-index: 800;
     transition: all 0.3s ease;
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-    outline: none; /* Fix 21: Remove focus outline */
+    outline: none;
 }
 
 .auto-back-button:hover {
@@ -411,7 +411,6 @@ body {
     }
 }
 
-/* Enhanced Toggle Buttons */
 .toggle-container {
     position: relative;
     display: flex;
@@ -430,7 +429,7 @@ body {
     position: relative;
     overflow: hidden;
     font-family: 'Orbitron', sans-serif;
-    outline: none; /* Fix 22: Remove focus outline */
+    outline: none;
 }
 
 .cool-toggle.on {
@@ -484,11 +483,11 @@ body {
     border-radius: 10px;
     border: 1px solid #0ff;
     position: relative;
-    transition: all 0.3s ease; /* Fix 23: Add transition */
+    transition: all 0.3s ease;
 }
 
 .sensor-item:hover {
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Fix 24: Add hover effect */
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
     transform: translateY(-3px);
 }
 
@@ -526,10 +525,9 @@ body {
     font-size: 1.2rem;
 }
 
-/* Responsive fixes */
 @media (max-width: 768px) {
     #circle-nav {
-        width: 400px; /* Fix 25: Reduce size on smaller screens */
+        width: 400px;
         height: 400px;
     }
     
@@ -541,7 +539,7 @@ body {
 
 @media (max-width: 480px) {
     #circle-nav {
-        width: 300px; /* Fix 26: Further reduce size on mobile */
+        width: 300px;
         height: 300px;
     }
     
