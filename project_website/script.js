@@ -1,30 +1,30 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // --- Element Selectors ---
-  const startButton = document.getElementById("start-button");
-  const landingPage = document.getElementById("landing-page");
-  const modeSelection = document.getElementById("mode-selection");
-  const circleNav = document.getElementById("circle-nav");
-  const navLinks = document.querySelectorAll(".circle-link");
-  const sections = document.querySelectorAll(".section");
-  const backButtons = document.querySelectorAll(".back-button");
-  const autoBackButton = document.querySelector(".auto-back-button");
-
-  // --- Initial Visibility ---
-  modeSelection.style.display = "none";
-  circleNav.style.display = "none";
-  sections.forEach(section => section.style.display = "none");
-
-  // --- Start Button Logic ---
-  startButton.addEventListener("click", function () {
+    // --- Element Selectors ---
+    const startButton = document.getElementById("start-button");
+    const landingPage = document.getElementById("landing-page");
+    const modeSelection = document.getElementById("mode-selection");
+    const circleNav = document.getElementById("circle-nav");
+    const navLinks = document.querySelectorAll(".circle-link");
+    const sections = document.querySelectorAll(".section");
+    const backButtons = document.querySelectorAll(".back-button");
+    const autoBackButton = document.querySelector(".auto-back-button");
+  
+    // --- Initial Visibility ---
+    modeSelection.style.display = "none";
+    circleNav.style.display = "none";
+    sections.forEach(section => section.style.display = "none");
+  
+    // --- Start Button Logic ---
+    startButton.addEventListener("click", function () {
     console.log("Start button clicked"); // Debug log
-    startButton.disabled = true;
-    landingPage.style.opacity = "0";
+      startButton.disabled = true;
+      landingPage.style.opacity = "0";
     landingPage.style.transition = "opacity 0.5s ease";
-
-    setTimeout(() => {
-      landingPage.style.display = "none";
-      modeSelection.style.display = "flex";
-      modeSelection.style.opacity = "0";
+  
+      setTimeout(() => {
+        landingPage.style.display = "none";
+        modeSelection.style.display = "flex";
+        modeSelection.style.opacity = "0";
       modeSelection.style.transition = "opacity 0.5s ease";
       
       // Force reflow
@@ -35,154 +35,154 @@ document.addEventListener("DOMContentLoaded", function () {
         modeSelection.style.opacity = "1";
       });
     }, 500);
-  });
-
-  // --- Manual Mode ---
-  document.getElementById("manual-mode").addEventListener("click", function () {
-    modeSelection.style.opacity = "0";
+    });
+  
+    // --- Manual Mode ---
+    document.getElementById("manual-mode").addEventListener("click", function () {
+      modeSelection.style.opacity = "0";
     modeSelection.style.transition = "opacity 0.5s ease";
-
-    setTimeout(() => {
-      modeSelection.style.display = "none";
-      circleNav.style.display = "block";
-      circleNav.style.opacity = "0";
-      circleNav.style.transform = "translate(-50%, -50%) scale(1) rotate(0deg)";
+  
+      setTimeout(() => {
+        modeSelection.style.display = "none";
+        circleNav.style.display = "block";
+        circleNav.style.opacity = "0";
+        circleNav.style.transform = "translate(-50%, -50%) scale(1) rotate(0deg)";
       circleNav.style.transition = "opacity 0.5s ease, transform 0.5s ease";
       
       // Force reflow
-      void circleNav.offsetWidth;
+        void circleNav.offsetWidth;
       
       requestAnimationFrame(() => {
         circleNav.style.opacity = "1";
         animateNavLinks();
       });
-    }, 500);
-  });
-
-  // --- Auto Mode ---
-  document.getElementById("auto-mode").addEventListener("click", function () {
-    modeSelection.style.opacity = "0";
+      }, 500);
+    });
+  
+    // --- Auto Mode ---
+    document.getElementById("auto-mode").addEventListener("click", function () {
+      modeSelection.style.opacity = "0";
     modeSelection.style.transition = "opacity 0.5s ease";
-
-    setTimeout(() => {
-      modeSelection.style.display = "none";
-      const autoSection = document.getElementById("automated-mode");
-      autoSection.style.display = "block";
-      autoSection.style.opacity = "0";
+  
+      setTimeout(() => {
+        modeSelection.style.display = "none";
+        const autoSection = document.getElementById("automated-mode");
+        autoSection.style.display = "block";
+        autoSection.style.opacity = "0";
       autoSection.style.transition = "opacity 0.5s ease";
       
       // Force reflow
-      void autoSection.offsetWidth;
+        void autoSection.offsetWidth;
       
       requestAnimationFrame(() => {
         autoSection.style.opacity = "1";
       });
-    }, 500);
-  });
-
-  // --- Circle Nav Buttons ---
-  navLinks.forEach(link => {
-    link.addEventListener("click", function (e) {
-      e.preventDefault();
-      const sectionId = this.getAttribute("data-section");
-
-      circleNav.style.opacity = "0";
-      circleNav.style.transform = "translate(-50%, -50%) scale(0.5) rotate(180deg)";
+      }, 500);
+    });
+  
+    // --- Circle Nav Buttons ---
+    navLinks.forEach(link => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        const sectionId = this.getAttribute("data-section");
+  
+        circleNav.style.opacity = "0";
+        circleNav.style.transform = "translate(-50%, -50%) scale(0.5) rotate(180deg)";
       circleNav.style.transition = "opacity 0.5s ease, transform 0.5s ease";
-
-      setTimeout(() => {
-        circleNav.style.display = "none";
-        const targetSection = document.getElementById(sectionId);
-        targetSection.style.display = "block";
-        targetSection.style.opacity = "0";
+  
+        setTimeout(() => {
+          circleNav.style.display = "none";
+          const targetSection = document.getElementById(sectionId);
+          targetSection.style.display = "block";
+          targetSection.style.opacity = "0";
         targetSection.style.transition = "opacity 0.5s ease";
         
         // Force reflow
-        void targetSection.offsetWidth;
+          void targetSection.offsetWidth;
         
         requestAnimationFrame(() => {
           targetSection.style.opacity = "1";
         });
-      }, 500);
+        }, 500);
+      });
     });
-  });
-
-  // --- Back Buttons ---
-  backButtons.forEach(button => {
-    button.addEventListener("click", function () {
-      const currentSection = this.closest(".section");
-      currentSection.style.opacity = "0";
+  
+    // --- Back Buttons ---
+    backButtons.forEach(button => {
+      button.addEventListener("click", function () {
+            const currentSection = this.closest(".section");
+            currentSection.style.opacity = "0";
       currentSection.style.transition = "opacity 0.5s ease";
-
-      setTimeout(() => {
-        currentSection.style.display = "none";
-        circleNav.style.display = "block";
-        circleNav.style.transform = "translate(-50%, -50%) scale(1) rotate(0deg)";
-        circleNav.style.opacity = "0";
+  
+        setTimeout(() => {
+          currentSection.style.display = "none";
+          circleNav.style.display = "block";
+          circleNav.style.transform = "translate(-50%, -50%) scale(1) rotate(0deg)";
+          circleNav.style.opacity = "0";
         circleNav.style.transition = "opacity 0.5s ease, transform 0.5s ease";
         
         // Force reflow
-        void circleNav.offsetWidth;
+          void circleNav.offsetWidth;
         
         requestAnimationFrame(() => {
           circleNav.style.opacity = "1";
           animateNavLinks();
         });
-      }, 500);
+        }, 500);
+      });
     });
-  });
-
-  autoBackButton.addEventListener("click", function () {
-    const currentSection = this.closest(".section");
-    currentSection.style.opacity = "0";
+  
+    autoBackButton.addEventListener("click", function () {
+      const currentSection = this.closest(".section");
+      currentSection.style.opacity = "0";
     currentSection.style.transition = "opacity 0.5s ease";
-
-    setTimeout(() => {
-      currentSection.style.display = "none";
-      modeSelection.style.display = "flex";
-      modeSelection.style.opacity = "0";
+  
+      setTimeout(() => {
+        currentSection.style.display = "none";
+        modeSelection.style.display = "flex";
+        modeSelection.style.opacity = "0";
       modeSelection.style.transition = "opacity 0.5s ease";
       
       // Force reflow
-      void modeSelection.offsetWidth;
+        void modeSelection.offsetWidth;
       
       requestAnimationFrame(() => {
         modeSelection.style.opacity = "1";
       });
-    }, 500);
-  });
+      }, 500);
+    });
+  
+    // --- Animate Circle Nav Links ---
+    function animateNavLinks() {
+        navLinks.forEach((link, index) => {
+            link.style.transform = "scale(0)";
+            link.style.opacity = "0";
+            
+            setTimeout(() => {
+                link.style.animation = `linkAppear 0.8s ease forwards ${index * 0.15}s`;
+            }, 10);
+            
+            // Reset any previous inline styles that might interfere
+            link.addEventListener('animationend', function() {
+                // Once animation completes, ensure we're at the right scale
+                link.style.transform = "scale(1)";
+                link.style.opacity = "1";
+            }, {once: true});
+            
+            // Add hover effects directly
+            link.addEventListener('mouseenter', () => {
+                link.style.transform = 'scale(1.1)';
+                if (link.querySelector('span')) {
+                    link.querySelector('span').style.transform = 'scale(1.2)';
+                }
+            });
 
-  // --- Animate Circle Nav Links ---
-  function animateNavLinks() {
-    navLinks.forEach((link, index) => {
-      link.style.transform = "scale(0)";
-      link.style.opacity = "0";
-      
-      setTimeout(() => {
-        link.style.animation = `linkAppear 0.8s ease forwards ${index * 0.15}s`;
-      }, 10);
-      
-      // Reset any previous inline styles that might interfere
-      link.addEventListener('animationend', function() {
-        // Once animation completes, ensure we're at the right scale
-        link.style.transform = "scale(1)";
-        link.style.opacity = "1";
-      }, {once: true});
-      
-      // Add hover effects directly
-      link.addEventListener('mouseenter', () => {
-        link.style.transform = 'scale(1.1)';
-        if (link.querySelector('span')) {
-          link.querySelector('span').style.transform = 'scale(1.2)';
-        }
-      });
-
-      link.addEventListener('mouseleave', () => {
-        link.style.transform = 'scale(1)';
-        if (link.querySelector('span')) {
-          link.querySelector('span').style.transform = 'scale(1)';
-        }
-      });
+            link.addEventListener('mouseleave', () => {
+                link.style.transform = 'scale(1)';
+                if (link.querySelector('span')) {
+                    link.querySelector('span').style.transform = 'scale(1)';
+                }
+            });
     });
   }
 
@@ -362,7 +362,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (mqttClient) {
     mqttClient.on("connect", function () {
       console.log("Connected to MQTT broker at " + mqttBrokerUrl);
-
+  
       // Subscribe to all relevant sensor topics
       const topics = [
         "sensors/temperature",
@@ -373,7 +373,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "actuators/fan",
         "actuators/window"
       ];
-
+  
       topics.forEach(topic => {
         mqttClient.subscribe(topic, function (err) {
           if (err) {
@@ -384,11 +384,11 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       });
     });
-
+  
     mqttClient.on("message", function (topic, message) {
       const value = message.toString();
       console.log(`Received message on ${topic}: ${value}`);
-
+  
       if (topic === "sensors/temperature") {
         document.getElementById("stat-temperature").innerText = value + "°C";
       } else if (topic === "sensors/humidity") {
