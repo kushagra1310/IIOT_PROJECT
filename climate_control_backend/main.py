@@ -84,7 +84,7 @@ def on_message(client, userdata, msg):
                     print("Room is empty - systems will remain off")
                 else:
                     # Normal control logic when room is occupied
-                    # Window control logic
+                    # Window control logic remember to change
                     if temperature >= 28:
                         window_status = "CLOSE"
                     elif 20 <= temperature < 28 and last_co2_ppm <= CO2_THRESHOLD:
