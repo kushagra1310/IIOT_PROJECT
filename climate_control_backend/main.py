@@ -98,7 +98,7 @@ def on_message(client, userdata, msg):
                         window_status = "CLOSE"
 
                     # Fan control logic
-                    if temperature >= 23 and temperature < 28:
+                    if temperature >= 23 and temperature < 30:
                         fan_status = "ON"
                     else:
                         fan_status = "OFF"
