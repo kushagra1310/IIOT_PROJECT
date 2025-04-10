@@ -1,6 +1,6 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include <Stepper.h>
+#include <Servo.h>  // Include the Servo library
 
 // WiFi & MQTT Configuration
 const char* ssid = "A35";
@@ -8,18 +8,14 @@ const char* password = "ghephukat";
 const char* mqtt_server = "192.168.22.225";
 const char* WINDOW_CONTROL_TOPIC = "temphumid_code/window_control";
 
-// Stepper Motor Configuration
-#define STEPS_PER_REV 200  // Adjust based on motor specs
-#define STEP_PIN_1 13
-#define STEP_PIN_2 12
-#define STEP_PIN_3 14
-#define STEP_PIN_4 27
+// Servo Motor Configuration
+#define SERVO_PIN 33  // Servo signal pin
 
-Stepper stepper(STEPS_PER_REV, STEP_PIN_1, STEP_PIN_3, STEP_PIN_2, STEP_PIN_4);
+Servo windowServo;
+bool window_open = false; // Track window status
+
 WiFiClient espClient;
 PubSubClient client(espClient);
-
-bool window_open = false; // Track window status
 
 // WiFi Connection
 void setup_wifi() {
@@ -58,13 +54,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
     if (message.indexOf("OPEN") != -1 && !window_open) {
         Serial.println("Opening window...");
-        stepper.setSpeed(10);  // Adjust speed
-        stepper.step(1000);    // Adjust steps to fully open
+        windowServo.write(90);  // Adjust to desired open angle
         window_open = true;
     } else if (message.indexOf("CLOSE") != -1 && window_open) {
         Serial.println("Closing window...");
-        stepper.setSpeed(10);
-        stepper.step(-1000);   // Reverse steps to close
+        windowServo.write(0);  // Adjust to desired closed angle
         window_open = false;
     }
 }
@@ -76,7 +70,8 @@ void setup() {
     client.setServer(mqtt_server, 1883);
     client.setCallback(callback);
 
-    stepper.setSpeed(10);  // Set initial speed
+    windowServo.attach(SERVO_PIN);  // Attach servo to pin 33
+    windowServo.write(0);           // Start in closed position
 }
 
 void loop() {

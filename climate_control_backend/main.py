@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt
 import json
 
 # Threshold for CO2
-CO2_THRESHOLD = 150
+CO2_THRESHOLD = 90 #REMEMBER TO CHANGE
 
 # MQTT Broker Details
 MQTT_BROKER = "192.168.22.225"
@@ -81,6 +81,7 @@ def on_message(client, userdata, msg):
                 if number_of_people == 0:
                     window_status = "CLOSE"
                     fan_status = "OFF"
+                    ac_status = "0"
                     print("Room is empty - systems will remain off")
                 else:
                     # Normal control logic when room is occupied

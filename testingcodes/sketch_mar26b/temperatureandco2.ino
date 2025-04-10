@@ -1,14 +1,19 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <DHT.h>
+#include <HTTPClient.h>  // For ThingSpeak
 
-#define MQ135_PIN 34  // Use an ADC pin for ESP32
-#define DHT_PIN 4      // GPIO4 for DHT sensor
-#define DHT_TYPE DHT22 // Change to DHT22 if using that model
+#define MQ135_PIN 34
+#define DHT_PIN 4
+#define DHT_TYPE DHT22
 
 const char* ssid = "A35";
 const char* password = "ghephukat";
-const char* mqtt_server = "192.168.22.225";  // Replace with Mosquitto broker IP
+const char* mqtt_server = "192.168.22.225";
+
+// Replace with your ThingSpeak Write API Key
+const char* thingspeak_api_key = "A16L3833TPH0H3JF";
+const char* thingspeak_server = "http://api.thingspeak.com/update";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -49,10 +54,9 @@ void loop() {
     }
     client.loop();
 
-    // Read CO₂ Sensor (MQ135)
     int sensorValue = analogRead(MQ135_PIN);
-    float voltage = sensorValue * (3.3 / 4095.0);  // Convert to voltage
-    float co2_ppm = voltage * 200;  // Adjust based on calibration
+    float voltage = sensorValue * (3.3 / 4095.0);
+    float co2_ppm = voltage * 200; // Adjust based on your calibration
 
     Serial.print("CO2 Level: ");
     Serial.print(co2_ppm);
@@ -62,7 +66,6 @@ void loop() {
     dtostrf(co2_ppm, 6, 2, co2_msg);
     client.publish("sensor/co2", co2_msg);
 
-    // Read Temperature & Humidity (DHT)
     float temperature = dht.readTemperature();
     float humidity = dht.readHumidity();
 
@@ -74,11 +77,31 @@ void loop() {
         Serial.println("%");
 
         char temp_humid_msg[50];
-        snprintf(temp_humid_msg, sizeof(temp_humid_msg), "{\"temperature\": %.2f, \"humidity\": %.2f}", temperature, humidity);
+        snprintf(temp_humid_msg, sizeof(temp_humid_msg),
+                 "{\"temperature\": %.2f, \"humidity\": %.2f}", temperature, humidity);
         client.publish("temphumid_code/temp_humidity", temp_humid_msg);
+
+        // ---- ThingSpeak Update ----
+        if (WiFi.status() == WL_CONNECTED) {
+            HTTPClient http;
+            String url = String(thingspeak_server) + "?api_key=" + thingspeak_api_key +
+                         "&field1=" + String(temperature) +
+                         "&field2=" + String(humidity) +
+                         "&field3=" + String(co2_ppm);
+            http.begin(url);
+            int httpResponseCode = http.GET();
+            if (httpResponseCode > 0) {
+                Serial.print("ThingSpeak response: ");
+                Serial.println(httpResponseCode);
+            } else {
+                Serial.print("Error sending to ThingSpeak: ");
+                Serial.println(httpResponseCode);
+            }
+            http.end();
+        }
     } else {
         Serial.println("Failed to read from DHT sensor!");
     }
 
-    delay(5000);  // Publish every 5 seconds
+    delay(5000);
 }
