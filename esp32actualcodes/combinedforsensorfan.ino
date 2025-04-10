@@ -74,7 +74,7 @@ void reconnect() {
 
 void setup() {
   Serial.begin(115200);
-  myStepper.setSpeed(10); // RPM
+  myStepper.setSpeed(30); // RPM
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
