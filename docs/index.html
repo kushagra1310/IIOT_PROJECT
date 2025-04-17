@@ -46,8 +46,12 @@
       <span>Stats</span>
       <div class="link-glow"></div>
     </a>
-    <a href="#" class="circle-link" data-section="automated-mode">
+    <!-- <a href="#" class="circle-link" data-section="automated-mode">
       <span>Auto Mode</span>
+      <div class="link-glow"></div>
+    </a> -->
+    <a href="#" class="circle-link menu-back-button" data-section="mode-selection">
+      <span>← BACK</span>
       <div class="link-glow"></div>
     </a>
   </div>
@@ -294,66 +298,66 @@
   <div id="temp-display">Loading...</div>
 
   <script>
-function updateSensorData() {
-  fetch("https://api.thingspeak.com/channels/2895649/feeds/last.json?api_key=FJPVWSKWQHVQOKT2")
-    .then(response => response.json())
-    .then(data => {
-      console.log("Received data:", data); // Debugging
+// function updateSensorData() {
+//   fetch("https://api.thingspeak.com/channels/2895649/feeds/last.json?api_key=FJPVWSKWQHVQOKT2")
+//     .then(response => response.json())
+//     .then(data => {
+//       console.log("Received data:", data); // Debugging
       
-      // Parse sensor values
-      const temperature = parseFloat(data.field1);
-      const humidity = parseFloat(data.field2);
-      const co2 = parseFloat(data.field3);
-      const occupancy = parseInt(data.field4);
+//       // Parse sensor values
+//       const temperature = parseFloat(data.field1);
+//       const humidity = parseFloat(data.field2);
+//       const co2 = parseFloat(data.field3);
+//       const occupancy = parseInt(data.field4);
       
-      // Update displayed values
-      if (data.field1) {
-        const tempValue = `${temperature}°C`;
-        document.getElementById("stats-temperature").textContent = tempValue;
-        document.querySelector("#automated-mode .sensor-item:nth-child(1) .sensor-value").textContent = tempValue;
-      }
-      if (data.field2) {
-        const humidityValue = `${humidity}%`;
-        document.getElementById("stats-humidity").textContent = humidityValue;
-        document.querySelector("#automated-mode .sensor-item:nth-child(2) .sensor-value").textContent = humidityValue;
-      }
-      if (data.field3) {
-        const co2Value = `${co2} ppm`;
-        document.getElementById("stats-co2").textContent = co2Value;
-        document.querySelector("#automated-mode .sensor-item:nth-child(3) .sensor-value").textContent = co2Value;
-      }
-      if (data.field4 && data.field4.trim() !== "") {
-          document.getElementById("stats-occupancy").textContent = `${data.field4} People`;
-          document.getElementById("automated-occupancy").textContent = `${data.field4} People`;
-        }
+//       // Update displayed values
+//       if (data.field1) {
+//         const tempValue = `${temperature}°C`;
+//         document.getElementById("stats-temperature").textContent = tempValue;
+//         document.querySelector("#automated-mode .sensor-item:nth-child(1) .sensor-value").textContent = tempValue;
+//       }
+//       if (data.field2) {
+//         const humidityValue = `${humidity}%`;
+//         document.getElementById("stats-humidity").textContent = humidityValue;
+//         document.querySelector("#automated-mode .sensor-item:nth-child(2) .sensor-value").textContent = humidityValue;
+//       }
+//       if (data.field3) {
+//         const co2Value = `${co2} ppm`;
+//         document.getElementById("stats-co2").textContent = co2Value;
+//         document.querySelector("#automated-mode .sensor-item:nth-child(3) .sensor-value").textContent = co2Value;
+//       }
+//       if (data.field4 && data.field4.trim() !== "") {
+//           document.getElementById("stats-occupancy").textContent = `${data.field4} People`;
+//           document.getElementById("automated-occupancy").textContent = `${data.field4} People`;
+//         }
       
-      // Implement automation rules
-      if (occupancy === 0) {
-        // If no people, turn everything off
-        setDeviceStatus('ac', 'OFF');
-        setDeviceStatus('fan', 'OFF');
-        setDeviceStatus('window', 'CLOSED');
-      } else if (temperature > 28) {
-        // High temperature: AC on, others off
-        setDeviceStatus('ac', 'ON');
-        setDeviceStatus('fan', 'OFF');
-        setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
-      } else if (temperature < 23) {
-        // Low temperature: AC and fan off
-        setDeviceStatus('ac', 'OFF');
-        setDeviceStatus('fan', 'OFF');
-        setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
-      } else {
-        // Moderate temperature (23-28): Fan on, AC off
-        setDeviceStatus('ac', 'OFF');
-        setDeviceStatus('fan', 'ON');
-        setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
-      }
-    })
-    .catch(error => {
-      console.error("ThingSpeak fetch error:", error);
-    });
-}
+//       // Implement automation rules
+//       if (occupancy === 0) {
+//         // If no people, turn everything off
+//         setDeviceStatus('ac', 'OFF');
+//         setDeviceStatus('fan', 'OFF');
+//         setDeviceStatus('window', 'CLOSED');
+//       } else if (temperature > 28) {
+//         // High temperature: AC on, others off
+//         setDeviceStatus('ac', 'ON');
+//         setDeviceStatus('fan', 'OFF');
+//         setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
+//       } else if (temperature < 23) {
+//         // Low temperature: AC and fan off
+//         setDeviceStatus('ac', 'OFF');
+//         setDeviceStatus('fan', 'OFF');
+//         setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
+//       } else {
+//         // Moderate temperature (23-28): Fan on, AC off
+//         setDeviceStatus('ac', 'OFF');
+//         setDeviceStatus('fan', 'ON');
+//         setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
+//       }
+//     })
+//     .catch(error => {
+//       console.error("ThingSpeak fetch error:", error);
+//     });
+// }
 
 // Helper function to update device status in the UI
 function setDeviceStatus(device, status) {
@@ -380,19 +384,19 @@ function setDeviceStatus(device, status) {
     autoElement.querySelector('.sensor-value').textContent = status;
   }
   
-  // Here you would also add code to actually control the physical devices
-  // via MQTT or other IoT protocol
+//   // Here you would also add code to actually control the physical devices
+//   // via MQTT or other IoT protocol
 }
 
 // Update immediately on page load
-document.addEventListener("DOMContentLoaded", function() {
-  console.log("DOM loaded, updating sensor data");
-  updateSensorData();
-  // Then update every 15 seconds (ThingSpeak's free tier rate limit)
-  setInterval(updateSensorData, 15000);
-});
- </script>
+// document.addEventListener("DOMContentLoaded", function() {
+//   console.log("DOM loaded, updating sensor data");
+//   updateSensorData();
+//   // Then update every 15 seconds (ThingSpeak's free tier rate limit)
+//   setInterval(updateSensorData, 15000);
+// });
+//  </script>
     
-  <script src="script.js"></script>
-</body>
-</html>
+ <script src="script.js"></script>
+ </body>
+ </html>

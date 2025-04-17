@@ -6,7 +6,7 @@
 
 #define STEPS_PER_REV 2048
 #define MQ135_PIN 34
-#define DHT_PIN 4
+#define DHT_PIN 15
 #define DHT_TYPE DHT22
 //current code on c type wala
 Stepper myStepper(STEPS_PER_REV, 19, 18, 5, 17); // IN1, IN2, IN3, IN4
