@@ -175,168 +175,226 @@
       </div>
     </section>
 
-    <!-- Statistics Section -->
-    <section id="stats" class="section">
-      <button class="back-button">← BACK</button>
-      <div class="section-content">
-        <h2>System Statistics</h2>
-        <div class="control-panel">
-          <div class="sensor-grid">
-            <div class="sensor-item">
-              <div class="sensor-label">Temperature</div>
-              <div class="sensor-value" id="stat-temperature">22°C</div>
-              <div class="status-indicator on small"></div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">Humidity</div>
-              <div class="sensor-value" id="stat-humidity">45%</div>
-              <div class="status-indicator on small"></div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">CO² Level</div>
-              <div class="sensor-value" id="stat-co2">650ppm</div>
-              <div class="status-indicator off small"></div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">Occupancy</div>
-              <div class="sensor-value" id="stat-occupancy">4 people</div>
-              <div class="status-indicator on small"></div>
-            </div>
-          </div>
-          
-          <h3 style="color: #0ff; text-align: center; margin-top: 2rem;">Device Status</h3>
-          <div class="device-status">
-            <div class="status-item">
-              <div class="status-indicator on small"></div>
-              <span style="color: #0ff;">AC: ON</span>
-            </div>
-            <div class="status-item">
-              <div class="status-indicator on small"></div>
-              <span style="color: #0ff;">Fan: ON</span>
-            </div>
-            <div class="status-item">
-              <div class="status-indicator off small"></div>
-              <span style="color: #0ff;">Window: CLOSED</span>
-            </div>
-          </div>
-          
-          <!-- <h3 style="color: #0ff; text-align: center; margin-top: 2rem;">Energy Usage</h3>
-          <div class="sensor-grid">
-            <div class="sensor-item">
-              <div class="sensor-label">Current</div>
-              <div class="sensor-value">1.2 kWh</div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">Daily</div>
-              <div class="sensor-value">8.5 kWh</div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">Weekly</div>
-              <div class="sensor-value">52.3 kWh</div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">Monthly</div>
-              <div class="sensor-value">215.7 kWh</div>
-            </div>
-          </div> -->
+<!-- Statistics Section -->
+<section id="stats" class="section">
+  <button class="back-button">← BACK</button>
+  <div class="section-content">
+    <h2>System Statistics</h2>
+    <div class="control-panel">
+      <div class="sensor-grid">
+        <div class="sensor-item">
+          <div class="sensor-label">Temperature</div>
+          <div class="sensor-value" id="stats-temperature">--°C</div>
+          <div class="status-indicator on small"></div>
+        </div>
+        <div class="sensor-item">
+          <div class="sensor-label">Humidity</div>
+          <div class="sensor-value" id="stats-humidity">--%</div>
+          <div class="status-indicator on small"></div>
+        </div>
+        <div class="sensor-item">
+          <div class="sensor-label">CO² Level</div>
+          <div class="sensor-value" id="stats-co2">-- ppm</div>
+          <div class="status-indicator off small"></div>
+        </div>
+        <div class="sensor-item">
+          <div class="sensor-label">Occupancy</div>
+          <div class="sensor-value" id="stats-occupancy">-- people</div>
+          <div class="status-indicator on small"></div>
         </div>
       </div>
-    </section>
+      
+      <h3 style="color: #0ff; text-align: center; margin-top: 2rem;">Device Status</h3>
+      <div class="device-status">
+        <div class="status-item">
+          <div class="status-indicator on small"></div>
+          <span style="color: #0ff;">AC: ON</span>
+        </div>
+        <div class="status-item">
+          <div class="status-indicator on small"></div>
+          <span style="color: #0ff;">Fan: ON</span>
+        </div>
+        <div class="status-item">
+          <div class="status-indicator off small"></div>
+          <span style="color: #0ff;">Window: CLOSED</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
     <!-- Automated Mode Section -->
-    <section id="automated-mode" class="section">
-      <button class="auto-back-button">← BACK</button>
-      <div class="section-content">
-        <h2>Automated Climate Control</h2>
-        <div class="control-panel">
-          <label style="color: #0ff; display: block; text-align: center;">System Status</label>
-          <div class="toggle-container" style="justify-content: center; margin: 1rem 0 2rem 0;">
-            <button class="cool-toggle on">ACTIVE</button>
-            <button class="cool-toggle off">STANDBY</button>
-          </div>
-          
-          <h3 style="color: #0ff; text-align: center;">System Sensors</h3>
-          <div class="sensor-grid">
-            <div class="sensor-item">
-              <div class="sensor-label">Temperature</div>
-              <div class="sensor-value">22°C</div>
-              <div class="status-indicator on small"></div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">Humidity</div>
-              <div class="sensor-value">45%</div>
-              <div class="status-indicator on small"></div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">CO² Level</div>
-              <div class="sensor-value">650ppm</div>
-              <div class="status-indicator off small"></div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">Occupancy</div>
-              <div class="sensor-value">4 people</div>
-              <div class="status-indicator on small"></div>
-            </div>
-          </div>
-          
-          <h3 style="color: #0ff; text-align: center; margin-top: 2rem;">Device Status</h3>
-          <div class="sensor-grid">
-            <div class="sensor-item">
-              <div class="sensor-label">AC</div>
-              <div class="sensor-value">ON</div>
-              <div class="status-indicator on small"></div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">Fan</div>
-              <div class="sensor-value">ON</div>
-              <div class="status-indicator on small"></div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">Window</div>
-              <div class="sensor-value">CLOSED</div>
-              <div class="status-indicator off small"></div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">System</div>
-              <div class="sensor-value">ACTIVE</div>
-              <div class="status-indicator on small"></div>
-            </div>
-          </div>
-          
-          <h3 style="color: #0ff; text-align: center; margin-top: 2rem;">Automation Settings</h3>
-          <div class="sensor-grid" style="grid-template-columns: 1fr;">
-            <div class="sensor-item">
-              <div class="sensor-label">Target Temperature</div>
-              <input type="range" min="18" max="28" value="22" class="slider" id="auto-temp-slider" style="margin: 1rem 0;">
-              <div style="display: flex; justify-content: space-between; color: #0ff;">
-                <span>18°C</span>
-                <span id="auto-temp-value">22°C</span>
-                <span>28°C</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- <div class="sensor-grid">
-            <div class="sensor-item">
-              <div class="sensor-label">Comfort Mode</div>
-              <div class="toggle-container" style="justify-content: center; margin-top: 1rem;">
-                <button class="cool-toggle on" style="padding: 10px 20px;">ON</button>
-                <button class="cool-toggle off" style="padding: 10px 20px;">OFF</button>
-              </div>
-            </div>
-            <div class="sensor-item">
-              <div class="sensor-label">Energy Saving</div>
-              <div class="toggle-container" style="justify-content: center; margin-top: 1rem;">
-                <button class="cool-toggle off" style="padding: 10px 20px;">ON</button>
-                <button class="cool-toggle on" style="padding: 10px 20px;">OFF</button>
-              </div>
-            </div>
-          </div> -->
+<section id="automated-mode" class="section">
+  <button class="auto-back-button">← BACK</button>
+  <div class="section-content">
+    <h2>Automated Climate Control</h2>
+    <div class="control-panel">
+      <div class="sensor-grid">
+        <div class="sensor-item">
+          <div class="sensor-label">Temperature</div>
+          <div class="sensor-value">--°C</div>
+          <div class="status-indicator on small"></div>
+        </div>
+        <div class="sensor-item">
+          <div class="sensor-label">Humidity</div>
+          <div class="sensor-value">--%</div>
+          <div class="status-indicator on small"></div>
+        </div>
+        <div class="sensor-item">
+          <div class="sensor-label">CO² Level</div>
+          <div class="sensor-value">-- ppm</div>
+          <div class="status-indicator off small"></div>
+        </div>
+        <div class="sensor-item">
+          <div class="sensor-label">Occupancy</div>
+          <div class="sensor-value" id="automated-occupancy">-- people</div>
+          <div class="status-indicator on small"></div>
+        </div>
+      </div>      
+      
+      <h3 style="color: #0ff; text-align: center; margin-top: 2rem;">Device Status</h3>
+      <div class="sensor-grid">
+        <div class="sensor-item">
+          <div class="sensor-label">AC</div>
+          <div class="sensor-value">ON</div>
+          <div class="status-indicator on small"></div>
+        </div>
+        <div class="sensor-item">
+          <div class="sensor-label">Fan</div>
+          <div class="sensor-value">ON</div>
+          <div class="status-indicator on small"></div>
+        </div>
+        <div class="sensor-item">
+          <div class="sensor-label">Window</div>
+          <div class="sensor-value">CLOSED</div>
+          <div class="status-indicator off small"></div>
+        </div>
+        <div class="sensor-item">
+          <div class="sensor-label">System</div>
+          <div class="sensor-value">ACTIVE</div>
+          <div class="status-indicator on small"></div>
         </div>
       </div>
-    </section>
+      
+      <h3 style="color: #0ff; text-align: center; margin-top: 2rem;">Automation Settings</h3>
+      <div class="sensor-grid" style="grid-template-columns: 1fr;">
+        <div class="sensor-item">
+          <div class="sensor-label">Target Temperature</div>
+          <input type="range" min="18" max="28" value="22" class="slider" id="auto-temp-slider" style="margin: 1rem 0;">
+          <div style="display: flex; justify-content: space-between; color: #0ff;">
+            <span>18°C</span>
+            <span id="auto-temp-value">22°C</span>
+            <span>28°C</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
   </div>
 
+  <div id="temp-display">Loading...</div>
+
+  <script>
+function updateSensorData() {
+  fetch("https://api.thingspeak.com/channels/2895649/feeds/last.json?api_key=FJPVWSKWQHVQOKT2")
+    .then(response => response.json())
+    .then(data => {
+      console.log("Received data:", data); // Debugging
+      
+      // Parse sensor values
+      const temperature = parseFloat(data.field1);
+      const humidity = parseFloat(data.field2);
+      const co2 = parseFloat(data.field3);
+      const occupancy = parseInt(data.field4);
+      
+      // Update displayed values
+      if (data.field1) {
+        const tempValue = `${temperature}°C`;
+        document.getElementById("stats-temperature").textContent = tempValue;
+        document.querySelector("#automated-mode .sensor-item:nth-child(1) .sensor-value").textContent = tempValue;
+      }
+      if (data.field2) {
+        const humidityValue = `${humidity}%`;
+        document.getElementById("stats-humidity").textContent = humidityValue;
+        document.querySelector("#automated-mode .sensor-item:nth-child(2) .sensor-value").textContent = humidityValue;
+      }
+      if (data.field3) {
+        const co2Value = `${co2} ppm`;
+        document.getElementById("stats-co2").textContent = co2Value;
+        document.querySelector("#automated-mode .sensor-item:nth-child(3) .sensor-value").textContent = co2Value;
+      }
+      if (data.field4 && data.field4.trim() !== "") {
+          document.getElementById("stats-occupancy").textContent = `${data.field4} People`;
+          document.getElementById("automated-occupancy").textContent = `${data.field4} People`;
+        }
+      
+      // Implement automation rules
+      if (occupancy === 0) {
+        // If no people, turn everything off
+        setDeviceStatus('ac', 'OFF');
+        setDeviceStatus('fan', 'OFF');
+        setDeviceStatus('window', 'CLOSED');
+      } else if (temperature > 28) {
+        // High temperature: AC on, others off
+        setDeviceStatus('ac', 'ON');
+        setDeviceStatus('fan', 'OFF');
+        setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
+      } else if (temperature < 23) {
+        // Low temperature: AC and fan off
+        setDeviceStatus('ac', 'OFF');
+        setDeviceStatus('fan', 'OFF');
+        setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
+      } else {
+        // Moderate temperature (23-28): Fan on, AC off
+        setDeviceStatus('ac', 'OFF');
+        setDeviceStatus('fan', 'ON');
+        setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
+      }
+    })
+    .catch(error => {
+      console.error("ThingSpeak fetch error:", error);
+    });
+}
+
+// Helper function to update device status in the UI
+function setDeviceStatus(device, status) {
+  // Update in stats section
+  const statElement = document.querySelector(`#stats .device-status .status-item:nth-child(${
+    device === 'ac' ? 1 : device === 'fan' ? 2 : 3
+  })`);
+  
+  if (statElement) {
+    statElement.querySelector('.status-indicator').className = 
+      `status-indicator ${status === 'ON' || status === 'OPEN' ? 'on' : 'off'} small`;
+    statElement.querySelector('span').textContent = 
+      `${device.toUpperCase()}: ${status}`;
+  }
+  
+  // Update in automated mode section
+  const autoElement = document.querySelector(`#automated-mode .sensor-grid:nth-of-type(2) .sensor-item:nth-child(${
+    device === 'ac' ? 1 : device === 'fan' ? 2 : 3
+  })`);
+  
+  if (autoElement) {
+    autoElement.querySelector('.status-indicator').className = 
+      `status-indicator ${status === 'ON' || status === 'OPEN' ? 'on' : 'off'} small`;
+    autoElement.querySelector('.sensor-value').textContent = status;
+  }
+  
+  // Here you would also add code to actually control the physical devices
+  // via MQTT or other IoT protocol
+}
+
+// Update immediately on page load
+document.addEventListener("DOMContentLoaded", function() {
+  console.log("DOM loaded, updating sensor data");
+  updateSensorData();
+  // Then update every 15 seconds (ThingSpeak's free tier rate limit)
+  setInterval(updateSensorData, 15000);
+});
+ </script>
+    
   <script src="script.js"></script>
 </body>
 </html>
