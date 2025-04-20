@@ -6,7 +6,7 @@ import os
 CO2_THRESHOLD = 130  # CHANGE ACCORDING TO CONDITIONS
 
 # MQTT Broker Details
-MQTT_BROKER = "team46.duckdns.org"
+MQTT_BROKER = "iot-team46.duckdns.org"
 MQTT_PORT = 1883
 
 # MQTT Topics

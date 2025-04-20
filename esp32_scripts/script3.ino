@@ -8,7 +8,7 @@ const char *ssid = "YourWiFiSSID";
 const char *password = "YourWiFiPassword";
 
 // MQTT Broker
-const char *mqtt_broker = "team46.duckdns.org";
+const char *mqtt_broker = "iot-team46.duckdns.org";
 const int mqtt_port = 1883;
 const char *mqtt_client_id = "esp32_climate_auto";
 

@@ -9,7 +9,7 @@
 
 const char *ssid = "A35";
 const char *password = "ghephukat";
-const char *mqtt_server = "team46.duckdns.org";
+const char *mqtt_server = "iot-team46.duckdns.org";
 
 // Replace with your ThingSpeak Write API Key
 const char *thingspeak_api_key = "A16L3833TPH0H3JF";

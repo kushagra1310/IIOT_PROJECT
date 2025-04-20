@@ -12,7 +12,7 @@
 Stepper myStepper(STEPS_PER_REV, 19, 18, 5, 17); // IN1, IN2, IN3, IN4
 const char *ssid = "A35";
 const char *password = "ghephukat";
-const char *mqtt_server = "team46.duckdns.org";
+const char *mqtt_server = "iot-team46.duckdns.org";
 const char *FAN_CONTROL_TOPIC = "temphumid_code/fan_control";
 const char *thingspeak_api_key = "A16L3833TPH0H3JF";
 const char *thingspeak_server = "http://api.thingspeak.com/update";

@@ -7,7 +7,7 @@ from umqtt.simple import MQTTClient
 # Configuration
 WIFI_SSID = "YourWiFiSSID"
 WIFI_PASSWORD = "YourWiFiPassword"
-MQTT_BROKER = "team46.duckdns.org"
+MQTT_BROKER = "iot-team46.duckdns.org"
 MQTT_CLIENT_ID = "esp32_climate_manual"
 
 # Actuator pins

@@ -225,7 +225,7 @@ navLinks.forEach(link => {
   }
 
   // --- MQTT Integration ---
-  const mqttBrokerUrl = "ws://team46.duckdns.org:1883"; // Replace with your IP
+  const mqttBrokerUrl = "ws://iot-team46.duckdns.org:1883"; // Replace with your IP
   let mqttClient;
   
   try {

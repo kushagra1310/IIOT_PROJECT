@@ -5,7 +5,7 @@
 // WiFi & MQTT Configuration
 const char *ssid = "A35";
 const char *password = "ghephukat";
-const char *mqtt_server = "team46.duckdns.org";
+const char *mqtt_server = "iot-team46.duckdns.org";
 const char *WINDOW_CONTROL_TOPIC = "temphumid_code/window_control";
 
 // Servo Motor Configuration
