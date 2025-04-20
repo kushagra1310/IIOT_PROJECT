@@ -6,8 +6,6 @@
   <title>Weather Control System</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-  <!-- Example using MQTT.js from a CDN -->
-
   <!-- Include MQTT.js library -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
@@ -32,6 +30,11 @@
       <div class="center-text">Controls</div>
       <div class="center-glow"></div>
     </div>
+    <!-- Add back button here -->
+    <a href="#" class="circle-link" data-section="mode-selection">
+      <span>← BACK</span>
+      <div class="link-glow"></div>
+    </a>
     <a href="#" class="circle-link" data-section="ac-control">
       <span>AC</span>
       <div class="link-glow"></div>
@@ -46,14 +49,6 @@
     </a>
     <a href="#" class="circle-link" data-section="stats">
       <span>Stats</span>
-      <div class="link-glow"></div>
-    </a>
-    <!-- <a href="#" class="circle-link" data-section="automated-mode">
-      <span>Auto Mode</span>
-      <div class="link-glow"></div>
-    </a> -->
-    <a href="#" class="circle-link menu-back-button" data-section="mode-selection">
-      <span>← BACK</span>
       <div class="link-glow"></div>
     </a>
   </div>
@@ -72,11 +67,11 @@
           </div>
           
           <label style="color: #0ff; display: block; text-align: center; margin-top: 1.5rem;">Temperature Control</label>
-          <input type="range" min="16" max="30" value="22" class="slider" id="temp-slider">
+          <input type="range" min="19" max="25" value="22" class="slider" id="temp-slider">
           <div style="display: flex; justify-content: space-between; color: #0ff;">
-            <span>16°C</span>
+            <span>19°C</span>
             <span id="temp-value">22°C</span>
-            <span>30°C</span>
+            <span>25°C</span>
           </div>
           
           <!-- <label style="color: #0ff; display: block; text-align: center; margin-top: 1.5rem;">Mode Selection</label>
@@ -245,7 +240,7 @@
           <div class="status-indicator on small"></div>
         </div>
         <div class="sensor-item">
-          <div class="sensor-label">CO² Level</div>
+          <div class="sensor-label">CO<sub>2</sub> Level</div>
           <div class="sensor-value">-- ppm</div>
           <div class="status-indicator off small"></div>
         </div>
@@ -300,66 +295,66 @@
   <div id="temp-display">Loading...</div>
 
   <script>
-// function updateSensorData() {
-//   fetch("https://api.thingspeak.com/channels/2895649/feeds/last.json?api_key=FJPVWSKWQHVQOKT2")
-//     .then(response => response.json())
-//     .then(data => {
-//       console.log("Received data:", data); // Debugging
+function updateSensorData() {
+  fetch("https://api.thingspeak.com/channels/2895649/feeds/last.json?api_key=FJPVWSKWQHVQOKT2")
+    .then(response => response.json())
+    .then(data => {
+      console.log("Received data:", data); // Debugging
       
-//       // Parse sensor values
-//       const temperature = parseFloat(data.field1);
-//       const humidity = parseFloat(data.field2);
-//       const co2 = parseFloat(data.field3);
-//       const occupancy = parseInt(data.field4);
+      // Parse sensor values
+      const temperature = parseFloat(data.field1);
+      const humidity = parseFloat(data.field2);
+      const co2 = parseFloat(data.field3);
+      const occupancy = parseInt(data.field4);
       
-//       // Update displayed values
-//       if (data.field1) {
-//         const tempValue = `${temperature}°C`;
-//         document.getElementById("stats-temperature").textContent = tempValue;
-//         document.querySelector("#automated-mode .sensor-item:nth-child(1) .sensor-value").textContent = tempValue;
-//       }
-//       if (data.field2) {
-//         const humidityValue = `${humidity}%`;
-//         document.getElementById("stats-humidity").textContent = humidityValue;
-//         document.querySelector("#automated-mode .sensor-item:nth-child(2) .sensor-value").textContent = humidityValue;
-//       }
-//       if (data.field3) {
-//         const co2Value = `${co2} ppm`;
-//         document.getElementById("stats-co2").textContent = co2Value;
-//         document.querySelector("#automated-mode .sensor-item:nth-child(3) .sensor-value").textContent = co2Value;
-//       }
-//       if (data.field4 && data.field4.trim() !== "") {
-//           document.getElementById("stats-occupancy").textContent = `${data.field4} People`;
-//           document.getElementById("automated-occupancy").textContent = `${data.field4} People`;
-//         }
+      // Update displayed values
+      if (data.field1) {
+        const tempValue = `${temperature}°C`;
+        document.getElementById("stats-temperature").textContent = tempValue;
+        document.querySelector("#automated-mode .sensor-item:nth-child(1) .sensor-value").textContent = tempValue;
+      }
+      if (data.field2) {
+        const humidityValue = `${humidity}%`;
+        document.getElementById("stats-humidity").textContent = humidityValue;
+        document.querySelector("#automated-mode .sensor-item:nth-child(2) .sensor-value").textContent = humidityValue;
+      }
+      if (data.field3) {
+        const co2Value = `${co2} ppm`;
+        document.getElementById("stats-co2").textContent = co2Value;
+        document.querySelector("#automated-mode .sensor-item:nth-child(3) .sensor-value").textContent = co2Value;
+      }
+      if (data.field4 && data.field4.trim() !== "") {
+          document.getElementById("stats-occupancy").textContent = `${data.field4} People`;
+          document.getElementById("automated-occupancy").textContent = `${data.field4} People`;
+        }
       
-//       // Implement automation rules
-//       if (occupancy === 0) {
-//         // If no people, turn everything off
-//         setDeviceStatus('ac', 'OFF');
-//         setDeviceStatus('fan', 'OFF');
-//         setDeviceStatus('window', 'CLOSED');
-//       } else if (temperature > 28) {
-//         // High temperature: AC on, others off
-//         setDeviceStatus('ac', 'ON');
-//         setDeviceStatus('fan', 'OFF');
-//         setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
-//       } else if (temperature < 23) {
-//         // Low temperature: AC and fan off
-//         setDeviceStatus('ac', 'OFF');
-//         setDeviceStatus('fan', 'OFF');
-//         setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
-//       } else {
-//         // Moderate temperature (23-28): Fan on, AC off
-//         setDeviceStatus('ac', 'OFF');
-//         setDeviceStatus('fan', 'ON');
-//         setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
-//       }
-//     })
-//     .catch(error => {
-//       console.error("ThingSpeak fetch error:", error);
-//     });
-// }
+      // Implement automation rules
+      if (occupancy === 0) {
+        // If no people, turn everything off
+        setDeviceStatus('ac', 'OFF');
+        setDeviceStatus('fan', 'OFF');
+        setDeviceStatus('window', 'CLOSED');
+      } else if (temperature > 28) {
+        // High temperature: AC on, others off
+        setDeviceStatus('ac', 'ON');
+        setDeviceStatus('fan', 'OFF');
+        setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
+      } else if (temperature < 23) {
+        // Low temperature: AC and fan off
+        setDeviceStatus('ac', 'OFF');
+        setDeviceStatus('fan', 'OFF');
+        setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
+      } else {
+        // Moderate temperature (23-28): Fan on, AC off
+        setDeviceStatus('ac', 'OFF');
+        setDeviceStatus('fan', 'ON');
+        setDeviceStatus('window', co2 > 150 ? 'OPEN' : 'CLOSED');
+      }
+    })
+    .catch(error => {
+      console.error("ThingSpeak fetch error:", error);
+    });
+}
 
 // Helper function to update device status in the UI
 function setDeviceStatus(device, status) {
@@ -386,19 +381,126 @@ function setDeviceStatus(device, status) {
     autoElement.querySelector('.sensor-value').textContent = status;
   }
   
-//   // Here you would also add code to actually control the physical devices
-//   // via MQTT or other IoT protocol
+  // Here you would also add code to actually control the physical devices
+  // via MQTT or other IoT protocol
 }
 
 // Update immediately on page load
-// document.addEventListener("DOMContentLoaded", function() {
-//   console.log("DOM loaded, updating sensor data");
-//   updateSensorData();
-//   // Then update every 15 seconds (ThingSpeak's free tier rate limit)
-//   setInterval(updateSensorData, 15000);
-// });
-//  </script>
+document.addEventListener("DOMContentLoaded", function() {
+  console.log("DOM loaded, updating sensor data");
+  updateSensorData();
+  // Then update every 15 seconds (ThingSpeak's free tier rate limit)
+  setInterval(updateSensorData, 15000);
+});
+ </script>
+ <script>
+  // MQTT Connection (WebSocket port)
+  const client = mqtt.connect("ws://192.168.22.225:9001");
+
+  // Helper to publish control messages
+  function sendCommand(topic, message) {
+    if (client.connected) {
+      client.publish(topic, message);
+      console.log(`Sent to ${topic}: ${message}`);
+      updateUIStatus(topic, message); // Update UI immediately
+    } else {
+      console.warn("MQTT not connected");
+    }
+  }
+
+  // Update UI elements when sending commands
+  function updateUIStatus(topic, message) {
+    const device = topic.split('/')[1];
+    const status = message.toLowerCase();
     
- <script src="script.js"></script>
- </body>
- </html>
+    // Update status indicators
+    document.querySelectorAll(`.status-item`).forEach(item => {
+      if (item.textContent.includes(device.toUpperCase())) {
+        const indicator = item.querySelector('.status-indicator');
+        indicator.classList.toggle('on', status === 'on' || status === 'open');
+        indicator.classList.toggle('off', !(status === 'on' || status === 'open'));
+        item.querySelector('span').textContent = `${device.toUpperCase()}: ${message.toUpperCase()}`;
+      }
+    });
+  }
+
+  // Manual Control Bindings
+  document.addEventListener("DOMContentLoaded", function() {
+    // AC Control
+    document.querySelector("#ac-control .cool-toggle.on").addEventListener("click", () => {
+      if (!window.isAutomaticMode) sendCommand("controls/ac", "on");
+    });
+    document.querySelector("#ac-control .cool-toggle.off").addEventListener("click", () => {
+      if (!window.isAutomaticMode) sendCommand("controls/ac", "off");
+    });
+    document.getElementById("temp-slider").addEventListener("input", (e) => {
+      if (!window.isAutomaticMode) {
+        const temp = e.target.value;
+        document.getElementById("temp-value").textContent = `${temp}°C`;
+        sendCommand("controls/ac/temp", temp);
+      }
+    });
+
+    // Fan Control
+    document.querySelector("#fan-control .cool-toggle.on").addEventListener("click", () => {
+      if (!window.isAutomaticMode) sendCommand("controls/fan", "on");
+    });
+    document.querySelector("#fan-control .cool-toggle.off").addEventListener("click", () => {
+      if (!window.isAutomaticMode) sendCommand("controls/fan", "off");
+    });
+    document.getElementById("fan-speed-slider").addEventListener("input", (e) => {
+      if (!window.isAutomaticMode) {
+        const speed = e.target.value;
+        document.getElementById("fan-speed-value").textContent = `Speed (${speed})`;
+        sendCommand("controls/fan/speed", speed);
+      }
+    });
+
+    // Window Control
+    document.querySelector("#window-control .cool-toggle.on").addEventListener("click", () => {
+      if (!window.isAutomaticMode) sendCommand("controls/window", "open");
+    });
+    document.querySelector("#window-control .cool-toggle.off").addEventListener("click", () => {
+      if (!window.isAutomaticMode) sendCommand("controls/window", "closed");
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Toggle button active states
+    document.querySelectorAll('.cool-toggle').forEach(button => {
+      button.addEventListener('click', function(e) {
+        // Remove active state from siblings
+        const container = e.target.closest('.toggle-container');
+        container.querySelectorAll('.cool-toggle').forEach(btn => {
+          btn.classList.remove('on');
+          btn.classList.add('off');
+        });
+        
+        // Set clicked button active
+        e.target.classList.add('on');
+        e.target.classList.remove('off');
+        
+        // Update circle nav glow
+        const sectionId = container.closest('.section').id;
+        const circleLink = document.querySelector(`.circle-link[data-section="${sectionId}"]`);
+        if (circleLink) {
+          circleLink.classList.toggle('active', e.target.classList.contains('on'));
+        }
+      });
+    });
+  
+    // Initialize default states
+    document.querySelectorAll('.cool-toggle.on').forEach(btn => {
+      btn.classList.add('on');
+      const sectionId = btn.closest('.section').id;
+      document.querySelector(`.circle-link[data-section="${sectionId}"]`)
+        ?.classList.add('active');
+    });
+  });
+  </script>
+    
+  <script src="script.js"></script>
+</body>
+</html>
