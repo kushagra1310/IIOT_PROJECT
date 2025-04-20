@@ -72,9 +72,9 @@
           <label style="color: #0ff; display: block; text-align: center; margin-top: 1.5rem;">Temperature Control</label>
           <input type="range" min="16" max="30" value="22" class="slider" id="temp-slider">
           <div style="display: flex; justify-content: space-between; color: #0ff;">
-            <span>16°C</span>
+            <span>19°C</span>
             <span id="temp-value">22°C</span>
-            <span>30°C</span>
+            <span>25°C</span>
           </div>
           
           <!-- <label style="color: #0ff; display: block; text-align: center; margin-top: 1.5rem;">Mode Selection</label>
@@ -113,13 +113,6 @@
             <button class="cool-toggle off">POWER OFF</button>
           </div>
           
-          <label style="color: #0ff; display: block; text-align: center;">Fan Speed</label>
-          <input type="range" min="1" max="5" value="3" class="slider" id="fan-speed-slider">
-          <div style="display: flex; justify-content: space-between; color: #0ff;">
-            <span>Low</span>
-            <span id="fan-speed-value">Medium (3)</span>
-            <span>High</span>
-          </div>
           
           <!-- <label style="color: #0ff; display: block; text-align: center; margin-top: 1.5rem;">Oscillation</label>
           <div class="toggle-container" style="justify-content: center;">
@@ -206,7 +199,7 @@
         </div>
       </div>
       
-      <h3 style="color: #0ff; text-align: center; margin-top: 2rem;">Device Status</h3>
+      <!-- <h3 style="color: #0ff; text-align: center; margin-top: 2rem;">Device Status</h3>
       <div class="device-status">
         <div class="status-item">
           <div class="status-indicator on small"></div>
@@ -220,7 +213,7 @@
           <div class="status-indicator off small"></div>
           <span style="color: #0ff;">Window: CLOSED</span>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </section>
@@ -282,11 +275,11 @@
       <div class="sensor-grid" style="grid-template-columns: 1fr;">
         <div class="sensor-item">
           <div class="sensor-label">Target Temperature</div>
-          <input type="range" min="18" max="28" value="22" class="slider" id="auto-temp-slider" style="margin: 1rem 0;">
+          <input type="range" min="19" max="25" value="22" class="slider" id="auto-temp-slider" style="margin: 1rem 0;">
           <div style="display: flex; justify-content: space-between; color: #0ff;">
-            <span>18°C</span>
+            <span>19°C</span>
             <span id="auto-temp-value">22°C</span>
-            <span>28°C</span>
+            <span>25°C</span>
           </div>
         </div>
       </div>
@@ -396,6 +389,114 @@ function setDeviceStatus(device, status) {
 //   setInterval(updateSensorData, 15000);
 // });
 //  </script>
+
+<script>
+  // MQTT Connection (WebSocket port)
+  const client = mqtt.connect("ws://192.168.22.225:9001");
+
+  // Helper to publish control messages
+  function sendCommand(topic, message) {
+    if (client.connected) {
+      client.publish(topic, message);
+      console.log(`Sent to ${topic}: ${message}`);
+      updateUIStatus(topic, message); // Update UI immediately
+    } else {
+      console.warn("MQTT not connected");
+    }
+  }
+
+  // Update UI elements when sending commands
+  function updateUIStatus(topic, message) {
+    const device = topic.split('/')[1];
+    const status = message.toLowerCase();
+    
+    // Update status indicators
+    document.querySelectorAll(`.status-item`).forEach(item => {
+      if (item.textContent.includes(device.toUpperCase())) {
+        const indicator = item.querySelector('.status-indicator');
+        indicator.classList.toggle('on', status === 'on' || status === 'open');
+        indicator.classList.toggle('off', !(status === 'on' || status === 'open'));
+        item.querySelector('span').textContent = `${device.toUpperCase()}: ${message.toUpperCase()}`;
+      }
+    });
+  }
+
+  // Manual Control Bindings
+  document.addEventListener("DOMContentLoaded", function() {
+    // AC Control
+    document.querySelector("#ac-control .cool-toggle.on").addEventListener("click", () => {
+      if (!window.isAutomaticMode) sendCommand("controls/ac", "on");
+    });
+    document.querySelector("#ac-control .cool-toggle.off").addEventListener("click", () => {
+      if (!window.isAutomaticMode) sendCommand("controls/ac", "off");
+    });
+    document.getElementById("temp-slider").addEventListener("input", (e) => {
+      if (!window.isAutomaticMode) {
+        const temp = e.target.value;
+        document.getElementById("temp-value").textContent = `${temp}°C`;
+        sendCommand("controls/ac/temp", temp);
+      }
+    });
+
+    // Fan Control
+    document.querySelector("#fan-control .cool-toggle.on").addEventListener("click", () => {
+      if (!window.isAutomaticMode) sendCommand("controls/fan", "on");
+    });
+    document.querySelector("#fan-control .cool-toggle.off").addEventListener("click", () => {
+      if (!window.isAutomaticMode) sendCommand("controls/fan", "off");
+    });
+    document.getElementById("fan-speed-slider").addEventListener("input", (e) => {
+      if (!window.isAutomaticMode) {
+        const speed = e.target.value;
+        document.getElementById("fan-speed-value").textContent = `Speed (${speed})`;
+        sendCommand("controls/fan/speed", speed);
+      }
+    });
+
+    // Window Control
+    document.querySelector("#window-control .cool-toggle.on").addEventListener("click", () => {
+      if (!window.isAutomaticMode) sendCommand("controls/window", "open");
+    });
+    document.querySelector("#window-control .cool-toggle.off").addEventListener("click", () => {
+      if (!window.isAutomaticMode) sendCommand("controls/window", "closed");
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Toggle button active states
+    document.querySelectorAll('.cool-toggle').forEach(button => {
+      button.addEventListener('click', function(e) {
+        // Remove active state from siblings
+        const container = e.target.closest('.toggle-container');
+        container.querySelectorAll('.cool-toggle').forEach(btn => {
+          btn.classList.remove('on');
+          btn.classList.add('off');
+        });
+        
+        // Set clicked button active
+        e.target.classList.add('on');
+        e.target.classList.remove('off');
+        
+        // Update circle nav glow
+        const sectionId = container.closest('.section').id;
+        const circleLink = document.querySelector(`.circle-link[data-section="${sectionId}"]`);
+        if (circleLink) {
+          circleLink.classList.toggle('active', e.target.classList.contains('on'));
+        }
+      });
+    });
+  
+    // Initialize default states
+    document.querySelectorAll('.cool-toggle.on').forEach(btn => {
+      btn.classList.add('on');
+      const sectionId = btn.closest('.section').id;
+      document.querySelector(`.circle-link[data-section="${sectionId}"]`)
+        ?.classList.add('active');
+    });
+  });
+  </script>
     
  <script src="script.js"></script>
  </body>
