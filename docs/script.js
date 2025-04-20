@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 // --- MQTT Integration ---
-const mqttBrokerUrl = "ws://139.59.68.181:9001"; // Replace with your IP
+const mqttBrokerUrl = "wss://team46.duckdns.org:9001"; // Replace with your IP
 let mqttClient;
 
 try {
