@@ -10,7 +10,7 @@ import ir_sensor
 # Configuration
 WIFI_SSID = "YourWiFiSSID"
 WIFI_PASSWORD = "YourWiFiPassword"
-MQTT_BROKER = "192.168.22.225"
+MQTT_BROKER = "139.59.68.181"
 MQTT_CLIENT_ID = "esp32_climate_system"
 
 # Sensor pins

@@ -3,22 +3,22 @@
 #include <HTTPClient.h>
 
 // WiFi credentials
-const char* ssid = "A35";                  // Replace with your WiFi SSID
-const char* password = "ghephukat";        // Replace with your WiFi Password
+const char *ssid = "A35";           // Replace with your WiFi SSID
+const char *password = "ghephukat"; // Replace with your WiFi Password
 
 // ThingSpeak configuration
-const char* thingspeak_server = "http://api.thingspeak.com/update";
-const char* thingspeak_api_key = "A16L3833TPH0H3JF";
+const char *thingspeak_server = "http://api.thingspeak.com/update";
+const char *thingspeak_api_key = "A16L3833TPH0H3JF";
 const int field_number = 4;
 
 // MQTT Broker configuration
-const char* mqtt_server = "192.168.22.225";
-const char* mqtt_topic = "room/peopleCount";
+const char *mqtt_server = "139.59.68.181";
+const char *mqtt_topic = "room/peopleCount";
 
 // Sensor pins
-const int trigPin = 12;  // HC-SR04 Trigger
-const int echoPin = 13;  // HC-SR04 Echo
-const int irPin = 14;    // IR Sensor
+const int trigPin = 12; // HC-SR04 Trigger
+const int echoPin = 13; // HC-SR04 Echo
+const int irPin = 14;   // IR Sensor
 
 // Speed of sound in cm/us
 const float speedOfSound = 0.0343;
@@ -31,10 +31,12 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 
 // WiFi connection setup
-void setup_wifi() {
+void setup_wifi()
+{
     WiFi.begin(ssid, password);
     Serial.print("Connecting to WiFi");
-    while (WiFi.status() != WL_CONNECTED) {
+    while (WiFi.status() != WL_CONNECTED)
+    {
         delay(500);
         Serial.print(".");
     }
@@ -44,12 +46,17 @@ void setup_wifi() {
 }
 
 // MQTT connection setup
-void reconnect() {
-    while (!client.connected()) {
+void reconnect()
+{
+    while (!client.connected())
+    {
         Serial.print("Connecting to MQTT...");
-        if (client.connect("ESP32_PeopleCounter")) {
+        if (client.connect("ESP32_PeopleCounter"))
+        {
             Serial.println("connected!");
-        } else {
+        }
+        else
+        {
             Serial.print("failed, retrying in 5s. Error: ");
             Serial.println(client.state());
             delay(5000);
@@ -58,7 +65,8 @@ void reconnect() {
 }
 
 // Get distance from ultrasonic sensor
-float getDistance() {
+float getDistance()
+{
     digitalWrite(trigPin, LOW);
     delayMicroseconds(2);
     digitalWrite(trigPin, HIGH);
@@ -66,41 +74,54 @@ float getDistance() {
     digitalWrite(trigPin, LOW);
 
     long duration = pulseIn(echoPin, HIGH, 30000); // 30ms timeout
-    if (duration == 0) return 999; // Return large value if timeout
+    if (duration == 0)
+        return 999;                       // Return large value if timeout
     return (duration * speedOfSound) / 2; // Convert to cm
 }
 
 // Send count to MQTT
-void publishCount(int count) {
-    if (client.connected()) {
+void publishCount(int count)
+{
+    if (client.connected())
+    {
         String payload = String(count);
         client.publish(mqtt_topic, payload.c_str());
         Serial.println("Published to MQTT: " + payload);
-    } else {
+    }
+    else
+    {
         Serial.println("MQTT not connected, skipping publish.");
     }
 }
 
 // Send count to ThingSpeak
-void sendToThingSpeak(int count) {
-    if (WiFi.status() == WL_CONNECTED) {
+void sendToThingSpeak(int count)
+{
+    if (WiFi.status() == WL_CONNECTED)
+    {
         HTTPClient http;
         String url = String(thingspeak_server) + "?api_key=" + thingspeak_api_key + "&field" + String(field_number) + "=" + String(count);
 
         http.begin(url);
         int httpCode = http.GET();
-        if (httpCode > 0) {
+        if (httpCode > 0)
+        {
             Serial.println("ThingSpeak Response Code: " + String(httpCode));
-        } else {
+        }
+        else
+        {
             Serial.println("ThingSpeak Error: " + http.errorToString(httpCode));
         }
         http.end();
-    } else {
+    }
+    else
+    {
         Serial.println("WiFi not connected, can't send to ThingSpeak");
     }
 }
 
-void setup() {
+void setup()
+{
     Serial.begin(115200);
     setup_wifi();
 
@@ -111,8 +132,10 @@ void setup() {
     pinMode(irPin, INPUT);
 }
 
-void loop() {
-    if (!client.connected()) {
+void loop()
+{
+    if (!client.connected())
+    {
         reconnect();
     }
     client.loop();
@@ -120,19 +143,24 @@ void loop() {
     int irStatus = digitalRead(irPin);
     float initialDistance = getDistance();
 
-    if (irStatus == LOW) {  // IR motion detected
+    if (irStatus == LOW)
+    { // IR motion detected
         Serial.println("IR Sensor Triggered!");
         delay(500);
 
         float newDistance = getDistance();
-        if (newDistance < 50) {  // Close enough to be a person
+        if (newDistance < 50)
+        { // Close enough to be a person
             Serial.println("Person detected!");
 
             delay(500);
-            if (initialDistance > newDistance) {
+            if (initialDistance > newDistance)
+            {
                 peopleInRoom++;
                 Serial.println("Person Entered! Total: " + String(peopleInRoom));
-            } else if (peopleInRoom > 0) {
+            }
+            else if (peopleInRoom > 0)
+            {
                 peopleInRoom--;
                 Serial.println("Person Exited! Total: " + String(peopleInRoom));
             }

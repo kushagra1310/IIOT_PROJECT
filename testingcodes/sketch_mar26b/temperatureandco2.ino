@@ -1,55 +1,65 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <DHT.h>
-#include <HTTPClient.h>  // For ThingSpeak
+#include <HTTPClient.h> // For ThingSpeak
 
 #define MQ135_PIN 34
 #define DHT_PIN 4
 #define DHT_TYPE DHT22
 
-const char* ssid = "A35";
-const char* password = "ghephukat";
-const char* mqtt_server = "192.168.22.225";
+const char *ssid = "A35";
+const char *password = "ghephukat";
+const char *mqtt_server = "139.59.68.181";
 
 // Replace with your ThingSpeak Write API Key
-const char* thingspeak_api_key = "A16L3833TPH0H3JF";
-const char* thingspeak_server = "http://api.thingspeak.com/update";
+const char *thingspeak_api_key = "A16L3833TPH0H3JF";
+const char *thingspeak_server = "http://api.thingspeak.com/update";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 DHT dht(DHT_PIN, DHT_TYPE);
 
-void setup_wifi() {
+void setup_wifi()
+{
     Serial.print("Connecting to WiFi...");
     WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED) {
+    while (WiFi.status() != WL_CONNECTED)
+    {
         delay(500);
         Serial.print(".");
     }
     Serial.println("\nWiFi connected!");
 }
 
-void reconnect() {
-    while (!client.connected()) {
+void reconnect()
+{
+    while (!client.connected())
+    {
         Serial.print("Connecting to MQTT...");
-        if (client.connect("ESP32Client")) {
+        if (client.connect("ESP32Client"))
+        {
             Serial.println("Connected!");
-        } else {
+        }
+        else
+        {
             Serial.print("Failed, retrying in 5s...");
             delay(5000);
         }
     }
 }
 
-void setup() {
+void setup()
+{
     Serial.begin(115200);
     setup_wifi();
     client.setServer(mqtt_server, 1883);
     dht.begin();
 }
 
-void loop() {
-    if (!client.connected()) {
+void loop()
+{
+    if (!client.connected())
+    {
         reconnect();
     }
     client.loop();
@@ -69,7 +79,8 @@ void loop() {
     float temperature = dht.readTemperature();
     float humidity = dht.readHumidity();
 
-    if (!isnan(temperature) && !isnan(humidity)) {
+    if (!isnan(temperature) && !isnan(humidity))
+    {
         Serial.print("Temperature: ");
         Serial.print(temperature);
         Serial.print("°C, Humidity: ");
@@ -82,7 +93,8 @@ void loop() {
         client.publish("temphumid_code/temp_humidity", temp_humid_msg);
 
         // ---- ThingSpeak Update ----
-        if (WiFi.status() == WL_CONNECTED) {
+        if (WiFi.status() == WL_CONNECTED)
+        {
             HTTPClient http;
             String url = String(thingspeak_server) + "?api_key=" + thingspeak_api_key +
                          "&field1=" + String(temperature) +
@@ -90,16 +102,21 @@ void loop() {
                          "&field3=" + String(co2_ppm);
             http.begin(url);
             int httpResponseCode = http.GET();
-            if (httpResponseCode > 0) {
+            if (httpResponseCode > 0)
+            {
                 Serial.print("ThingSpeak response: ");
                 Serial.println(httpResponseCode);
-            } else {
+            }
+            else
+            {
                 Serial.print("Error sending to ThingSpeak: ");
                 Serial.println(httpResponseCode);
             }
             http.end();
         }
-    } else {
+    }
+    else
+    {
         Serial.println("Failed to read from DHT sensor!");
     }
 

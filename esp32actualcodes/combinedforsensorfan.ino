@@ -8,14 +8,14 @@
 #define MQ135_PIN 34
 #define DHT_PIN 15
 #define DHT_TYPE DHT22
-//current code on c type wala
+// current code on c type wala
 Stepper myStepper(STEPS_PER_REV, 19, 18, 5, 17); // IN1, IN2, IN3, IN4
-const char* ssid = "A35";
-const char* password = "ghephukat";
-const char* mqtt_server = "192.168.22.225";
-const char* FAN_CONTROL_TOPIC = "temphumid_code/fan_control";
-const char* thingspeak_api_key = "A16L3833TPH0H3JF";
-const char* thingspeak_server = "http://api.thingspeak.com/update";
+const char *ssid = "A35";
+const char *password = "ghephukat";
+const char *mqtt_server = "139.59.68.181";
+const char *FAN_CONTROL_TOPIC = "temphumid_code/fan_control";
+const char *thingspeak_api_key = "A16L3833TPH0H3JF";
+const char *thingspeak_server = "http://api.thingspeak.com/update";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -26,53 +26,67 @@ unsigned long previousFanMillis = 0;
 const long fanInterval = 50; // Fan step interval
 unsigned long lastSensorRead = 0;
 
-void setup_wifi() {
+void setup_wifi()
+{
   Serial.print("Connecting to WiFi...");
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
     Serial.print(".");
   }
   Serial.println("\nWiFi connected!");
 }
 
-void callback(char* topic, byte* payload, unsigned int length) {
+void callback(char *topic, byte *payload, unsigned int length)
+{
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
 
   char message[length + 1];
-  for (int i = 0; i < length; i++) {
+  for (int i = 0; i < length; i++)
+  {
     message[i] = (char)payload[i];
   }
   message[length] = '\0';
   Serial.println(message);
 
-  if (strcmp(topic, FAN_CONTROL_TOPIC) == 0) {
-    if (strcmp(message, "ON") == 0) {
+  if (strcmp(topic, FAN_CONTROL_TOPIC) == 0)
+  {
+    if (strcmp(message, "ON") == 0)
+    {
       Serial.println("Fan status set to ON");
       fanRunning = true;
-    } else if (strcmp(message, "OFF") == 0) {
+    }
+    else if (strcmp(message, "OFF") == 0)
+    {
       Serial.println("Fan status set to OFF");
       fanRunning = false;
     }
   }
 }
 
-void reconnect() {
-  while (!client.connected()) {
+void reconnect()
+{
+  while (!client.connected())
+  {
     Serial.print("Connecting to MQTT...");
-    if (client.connect("ESP32Client")) {
+    if (client.connect("ESP32Client"))
+    {
       Serial.println("Connected!");
       client.subscribe(FAN_CONTROL_TOPIC);
-    } else {
+    }
+    else
+    {
       Serial.print("Failed, retrying in 5s...");
       delay(5000);
     }
   }
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
   myStepper.setSpeed(30); // RPM
   setup_wifi();
@@ -81,20 +95,24 @@ void setup() {
   dht.begin();
 }
 
-void loop() {
-  if (!client.connected()) {
+void loop()
+{
+  if (!client.connected())
+  {
     reconnect();
   }
   client.loop();
 
   unsigned long currentMillis = millis();
 
-  if (fanRunning && currentMillis - previousFanMillis >= fanInterval) {
+  if (fanRunning && currentMillis - previousFanMillis >= fanInterval)
+  {
     previousFanMillis = currentMillis;
     myStepper.step(1); // Continuous rotation
   }
 
-  if (currentMillis - lastSensorRead >= 5000) {
+  if (currentMillis - lastSensorRead >= 5000)
+  {
     lastSensorRead = currentMillis;
 
     int sensorValue = analogRead(MQ135_PIN);
@@ -112,7 +130,8 @@ void loop() {
     float temperature = dht.readTemperature();
     float humidity = dht.readHumidity();
 
-    if (!isnan(temperature) && !isnan(humidity)) {
+    if (!isnan(temperature) && !isnan(humidity))
+    {
       Serial.print("Temperature: ");
       Serial.print(temperature);
       Serial.print("°C, Humidity: ");
@@ -124,7 +143,8 @@ void loop() {
                "{\"temperature\": %.2f, \"humidity\": %.2f}", temperature, humidity);
       client.publish("temphumid_code/temp_humidity", temp_humid_msg);
 
-      if (WiFi.status() == WL_CONNECTED) {
+      if (WiFi.status() == WL_CONNECTED)
+      {
         HTTPClient http;
         String url = String(thingspeak_server) + "?api_key=" + thingspeak_api_key +
                      "&field1=" + String(temperature) +
@@ -132,16 +152,21 @@ void loop() {
                      "&field3=" + String(co2_ppm);
         http.begin(url);
         int httpResponseCode = http.GET();
-        if (httpResponseCode > 0) {
+        if (httpResponseCode > 0)
+        {
           Serial.print("ThingSpeak response: ");
           Serial.println(httpResponseCode);
-        } else {
+        }
+        else
+        {
           Serial.print("Error sending to ThingSpeak: ");
           Serial.println(httpResponseCode);
         }
         http.end();
       }
-    } else {
+    }
+    else
+    {
       Serial.println("Failed to read from DHT sensor!");
     }
   }
