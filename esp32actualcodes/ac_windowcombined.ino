@@ -96,18 +96,26 @@ void callback(char *topic, byte *payload, unsigned int length)
 
   else if (String(topic) == AC_CONTROL_TOPIC)
   {
-    if (message.indexOf("22") != -1 && ac_status == 0)
-    {
+    // if (message.indexOf("0") == -1 && ac_status == 0 )
+    // {
+    //   int temp=message.toInt();
+    //   Serial.println("Turning on AC...");
+    //   displayBinary(temp - 18);
+    //   ac_status = temp;
+    // }
+    // else if (message.indexOf("0") != -1 && ac_status != 0)
+    // {
+    //   Serial.println("Turning off AC...");
+    //   displayBinary(0);
+    //   ac_status = 0;
+    // }
+      int temp=message.toInt();
       Serial.println("Turning on AC...");
-      displayBinary(22 - 19);
-      ac_status = 22;
-    }
-    else if (message.indexOf("0") != -1 && ac_status != 0)
-    {
-      Serial.println("Turning off AC...");
+      if(temp>18)
+      displayBinary(temp - 18);
+      else
       displayBinary(0);
-      ac_status = 0;
-    }
+      ac_status = temp;
   }
 }
 

@@ -239,6 +239,7 @@ let isAutomaticMode = false;
 const acPowerOnBtn = document.querySelector('#ac-control .cool-toggle.on');
 const acPowerOffBtn = document.querySelector('#ac-control .cool-toggle.off');
 const acTempSlider = document.getElementById("temp-slider");
+const autoacTempSlider = document.getElementById("auto-temp-slider");
 
 // Button event listeners for Fan
 const fanPowerOnBtn = document.querySelector('#fan-control .cool-toggle.on');
@@ -256,7 +257,7 @@ const autoStandbyBtn = document.querySelector('#automated-mode .cool-toggle.off'
 if (acPowerOnBtn) {
   acPowerOnBtn.addEventListener('click', function() {
     if (!isAutomaticMode) {
-      if (mqttClient) mqttClient.publish('controls/ac', 'on');
+      if (mqttClient) mqttClient.publish('controls/ac', acTempSlider.value);
       updateLEDDisplay(acTempSlider.value);
     }
   });
@@ -265,30 +266,48 @@ if (acPowerOnBtn) {
 if (acPowerOffBtn) {
   acPowerOffBtn.addEventListener('click', function() {
     if (!isAutomaticMode) {
-      if (mqttClient) mqttClient.publish('controls/ac', 'off');
+      if (mqttClient) mqttClient.publish('controls/ac', '0');
       updateLEDDisplay('off');
     }
   });
 }
 
-if (acTempSlider) {
-  acTempSlider.addEventListener('input', function() {
-    if (!isAutomaticMode && acPowerOnBtn.classList.contains('on')) {
-      // Keep only within range 19-25
-      const value = Math.min(Math.max(parseInt(this.value), 19), 25);
-      document.getElementById("temp-value").textContent = value + "°C";
-      if (mqttClient) mqttClient.publish('controls/ac/temp', value.toString());
-      updateLEDDisplay(value);
-    }
-  });
+// if (acTempSlider) {
+//   acTempSlider.addEventListener('input', function() {
+//     if (!isAutomaticMode && acPowerOnBtn.classList.contains('on')) {
+//       // Keep only within range 19-25
+//       const value = Math.min(Math.max(parseInt(this.value), 19), 25);
+//       document.getElementById("temp-value").textContent = value + "°C";
+//       console.log("value of ac temperature changed to: " + value);
+//       if (mqttClient) mqttClient.publish('controls/ac/temp', value.toString());
+//       updateLEDDisplay(value);
+//     }
+//   });
 
-  // Adjust the temperature slider range
-  acTempSlider.min = "19";
-  acTempSlider.max = "25";
-  acTempSlider.value = "22";
-  document.getElementById("temp-value").textContent = "22°C";
-}
+//   // Adjust the temperature slider range
+//   acTempSlider.min = "19";
+//   acTempSlider.max = "25";
+//   acTempSlider.value = "22";
+//   document.getElementById("temp-value").textContent = "22°C";
+// }
+// if (autoacTempSlider) {
+//   acTempSlider.addEventListener('input', function() {
+//     if (isAutomaticMode) {
+//       // Keep only within range 19-25
+//       const value = Math.min(Math.max(parseInt(this.value), 19), 25);
+//       document.getElementById("auto-temp-value").textContent = value + "°C";
+//       console.log("value of ac temperature changed to: " + value);
+//       if (mqttClient) mqttClient.publish('controls/ac/temp', value.toString());
+//       updateLEDDisplay(value);
+//     }
+//   });
 
+//   // Adjust the temperature slider range
+//   acTempSlider.min = "19";
+//   acTempSlider.max = "25";
+//   acTempSlider.value = "22";
+//   document.getElementById("temp-value").textContent = "22°C";
+// }
 if (fanPowerOnBtn) {
   fanPowerOnBtn.addEventListener('click', function() {
     if (!isAutomaticMode) {
@@ -344,7 +363,7 @@ if (autoStandbyBtn) {
       autoActiveBtn.classList.add('off');
       autoActiveBtn.classList.remove('on');
       // Turn everything off in standby mode
-      mqttClient.publish('controls/ac', 'off');
+      mqttClient.publish('controls/ac', '0');
       mqttClient.publish('controls/fan', 'off');
       mqttClient.publish('controls/window', 'close');
     }
@@ -359,7 +378,7 @@ if (statsStandbyBtn) {
     if (mqttClient) {
       mqttClient.publish('controls/mode', 'standby');
       // Turn everything off in standby mode
-      mqttClient.publish('controls/ac', 'off');
+      mqttClient.publish('controls/ac', '0');
       mqttClient.publish('controls/fan', 'off');
       mqttClient.publish('controls/window', 'close');
     }
@@ -400,6 +419,7 @@ if (mqttClient) {
       "controls/mode",          // Add this for mode changes
       "controls/fan",           // Add this for fan control
       "controls/ac",            // Add this for AC control
+      "controls/ac/temp",
       "controls/window",        // Add this for window control
       "temphumid_code/temp_humidity",
       "sensor/co2",
@@ -425,9 +445,10 @@ if (mqttClient) {
       : document.getElementById(elementId);
     
     if (element) {
-      element.textContent = value !== undefined && value !== null 
-        ? `${value} ${unit}` 
-        : `-- ${unit}`;
+      element.textContent = (value !== undefined && value !== null)
+        ? `${value} ${unit || ''}` 
+        : 'N/A';
+        // : `-- ${unit}`;
     }
   }
   mqttClient.on("message", function (topic, message) {
@@ -458,7 +479,7 @@ else if (topic === "room/peopleCount") {
 // 2. Handle device status updates
 else if (topic === "room/ac_control") {
   // AC sends "22" for ON, "0" for OFF
-  updateDeviceStatus('ac', value === "22" ? "ON" : "OFF");
+  updateDeviceStatus('ac', value === "0" ? "OFF" : "ON");
 } 
 else if (topic === "temphumid_code/fan_control") {
   // Fan sends "ON"/"OFF" in uppercase

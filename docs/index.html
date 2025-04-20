@@ -74,7 +74,7 @@
           <h2>Air Conditioning Control</h2>
           <div class="control-panel">
             <div class="toggle-container" style="justify-content: center">
-              <button class="cool-toggle on">POWER ON</button>
+              <button class="cool-toggle on">POWER ON / UPDATE</button>
               <button class="cool-toggle off">POWER OFF</button>
             </div>
 
@@ -89,8 +89,8 @@
             >
             <input
               type="range"
-              min="16"
-              max="30"
+              min="19"
+              max="25"
               value="22"
               class="slider"
               id="temp-slider"
@@ -495,19 +495,55 @@
           }
         });
       }
-
+      
+      // Set up global mode tracking
+      window.isAutomaticMode = false;
+      
+      // Initialize mode selection handlers
+      document.addEventListener("DOMContentLoaded", function() {
+        const manualModeBtn = document.getElementById("manual-mode");
+        const autoModeBtn = document.getElementById("auto-mode");
+        
+        if (manualModeBtn) {
+          manualModeBtn.addEventListener("click", function() {
+            window.isAutomaticMode = false;
+            console.log("Manual mode activated");
+          });
+        }
+        
+        if (autoModeBtn) {
+          autoModeBtn.addEventListener("click", function() {
+            window.isAutomaticMode = true;
+            console.log("Automatic mode activated");
+            // Show the automated mode section
+            document.getElementById("automated-mode").style.display = "block";
+          });
+        }
+        
+        // Automated control bindings - removed the isAutomaticMode check
+        const autoTempSlider = document.getElementById("auto-temp-slider");
+        if (autoTempSlider) {
+          autoTempSlider.addEventListener("input", (e) => {
+            const temp = e.target.value;
+            document.getElementById("auto-temp-value").textContent = `${temp}°C`;
+            sendCommand("controls/ac/temp", temp);
+            console.log("Auto temp slider updated:", temp);
+          });
+        }
+      });
+      
       // Manual Control Bindings
       document.addEventListener("DOMContentLoaded", function () {
         // AC Control
         document
           .querySelector("#ac-control .cool-toggle.on")
           .addEventListener("click", () => {
-            if (!window.isAutomaticMode) sendCommand("controls/ac", "on");
+            // if (!window.isAutomaticMode) sendCommand("controls/ac", "on");
           });
         document
           .querySelector("#ac-control .cool-toggle.off")
           .addEventListener("click", () => {
-            if (!window.isAutomaticMode) sendCommand("controls/ac", "off");
+            if (!window.isAutomaticMode) sendCommand("controls/ac", "0");
           });
         document
           .getElementById("temp-slider")
@@ -530,9 +566,11 @@
           .addEventListener("click", () => {
             if (!window.isAutomaticMode) sendCommand("controls/fan", "off");
           });
-        document
-          .getElementById("fan-speed-slider")
-          .addEventListener("input", (e) => {
+        
+        // Check if fan-speed-slider exists
+        const fanSpeedSlider = document.getElementById("fan-speed-slider");
+        if (fanSpeedSlider) {
+          fanSpeedSlider.addEventListener("input", (e) => {
             if (!window.isAutomaticMode) {
               const speed = e.target.value;
               document.getElementById(
@@ -541,6 +579,7 @@
               sendCommand("controls/fan/speed", speed);
             }
           });
+        }
 
         // Window Control
         document
@@ -595,6 +634,15 @@
             .querySelector(`.circle-link[data-section="${sectionId}"]`)
             ?.classList.add("active");
         });
+        
+        // Back button for automated mode
+        const autoBackBtn = document.querySelector(".auto-back-button");
+        if (autoBackBtn) {
+          autoBackBtn.addEventListener("click", function() {
+            document.getElementById("automated-mode").style.display = "none";
+            document.getElementById("mode-selection").style.display = "flex";
+          });
+        }
       });
     </script>
 
