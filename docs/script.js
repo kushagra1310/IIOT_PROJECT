@@ -212,7 +212,7 @@ try {
   };
   
   mqttClient = mqtt.connect(mqttBrokerUrl, {
-    username: 'test46',
+    username: 'team46',
     password: 'iotisthebestmqttisthebest!'
   });
   console.log("Attempting to connect to MQTT broker");
