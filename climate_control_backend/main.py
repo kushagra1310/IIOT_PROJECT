@@ -22,12 +22,13 @@ MODE_TOPIC = "controls/mode"
 MANUAL_FAN_TOPIC = "controls/fan"
 MANUAL_AC_TOPIC = "controls/ac"
 MANUAL_WINDOW_TOPIC = "controls/window"
+AC_TEMPERATURE_CONTROL= "controls/ac/temp"
 
 # State
 last_co2_ppm = 0
 number_of_people = 0
 ac_status = 0
-
+ac_current_temp = 0
 # Persisted mode
 MODE_FILE = "current_mode.txt"
 
@@ -58,14 +59,15 @@ def on_connect(client, userdata, flags, rc):
             (MODE_TOPIC, 0),
             (MANUAL_FAN_TOPIC, 0),
             (MANUAL_AC_TOPIC, 0),
-            (MANUAL_WINDOW_TOPIC, 0)
+            (MANUAL_WINDOW_TOPIC, 0),
+            (AC_TEMPERATURE_CONTROL, 0)
         ])
     else:
         print("Connection failed")
 
 # MQTT message callback
 def on_message(client, userdata, msg):
-    global last_co2_ppm, number_of_people, ac_status, current_mode
+    global last_co2_ppm, number_of_people, ac_status, current_mode, ac_current_temp
 
     print("=" * 50)
     print(f"Message Received! Topic: {msg.topic}")
@@ -102,6 +104,13 @@ def on_message(client, userdata, msg):
             if msg.topic == CO2_TOPIC:
                 last_co2_ppm = float(decoded_payload)
                 print(f"Updated CO₂ Level: {last_co2_ppm} ppm")
+            elif msg.topic == AC_TEMPERATURE_CONTROL:
+                ac_current_temp = int(decoded_payload)
+                print(f"Updated AC temperature: {ac_current_temp} °C")
+                if int(ac_status) != 0:
+                    ac_status = ac_current_temp
+                    client.publish(AC_TOPIC, ac_status)
+                    print(f"AC status set to: {ac_status}")
 
             elif msg.topic == PEOPLE_TOPIC:
                 number_of_people = int(decoded_payload)
@@ -148,7 +157,7 @@ def on_message(client, userdata, msg):
                             fan_status = "OFF"
 
                         # AC control
-                        ac_status = "22" if temperature >= 28 else "0"
+                        ac_status = str(ac_current_temp) if temperature >= 28 else "0"
 
                     # Publish decisions
                     window_message = json.dumps({"window": window_status})
