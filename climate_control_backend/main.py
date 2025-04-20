@@ -175,6 +175,8 @@ def on_subscribe(client, userdata, mid, granted_qos):
 
 # Start client
 client = mqtt.Client()
+client.username = 'team46'
+client.password = 'iotisthebestmqttisthebest!'
 client.on_connect = on_connect
 client.on_message = on_message
 client.on_subscribe = on_subscribe

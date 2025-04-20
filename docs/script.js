@@ -211,7 +211,10 @@ try {
     connectTimeout: 30 * 1000  // 30 second connection timeout
   };
   
-  mqttClient = mqtt.connect(mqttBrokerUrl, options);
+  mqttClient = mqtt.connect(mqttBrokerUrl, {
+    username: 'test46',
+    password: 'iotisthebestmqttisthebest!'
+  });
   console.log("Attempting to connect to MQTT broker");
   
   mqttClient.on("connect", function () {
