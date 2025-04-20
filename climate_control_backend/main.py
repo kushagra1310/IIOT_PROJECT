@@ -6,7 +6,7 @@ import os
 CO2_THRESHOLD = 130  # CHANGE ACCORDING TO CONDITIONS
 
 # MQTT Broker Details
-MQTT_BROKER = "iot-team46.duckdns.org"
+MQTT_BROKER = "mqtt"
 MQTT_PORT = 1883
 
 # MQTT Topics
@@ -15,7 +15,7 @@ TEMP_HUMID_TOPIC = "temphumid_code/temp_humidity"
 WINDOW_CONTROL_TOPIC = "temphumid_code/window_control"
 FAN_CONTROL_TOPIC = "temphumid_code/fan_control"
 PEOPLE_TOPIC = "room/peopleCount"
-AC_TOPIC = "room/ac_control"
+AC_TOPIC = "room/ac_control"   
 
 # Control Topics
 MODE_TOPIC = "controls/mode"
