@@ -1,9 +1,9 @@
 # Automated Home Climate Control System
 
-## Team 46:
-Kushagra Agrawal - 2024101110<br />
-Devshree Vyas - 2024111003<br />
-Samarth Rao - 2024111035
+## Contributors
+- [Kushagra Agrawal](https://github.com/kushagra1310)
+- [Devshree Vyas](https://github.com/DVyas3000)
+- [Samarth Rao](https://github.com/rao-samarth)
 
 ## Introduction
 This is a smart IoT-based solution to automatically regulate indoor climate using real-time sensor feedback. Built using ESP32, MQTT, and a web-based control panel, this system monitors temperature, humidity, CO₂ levels, and occupancy to optimize home comfort and energy usage. <br />
